@@ -1,182 +1,294 @@
 <div align="center">
 
-# 🏛️ The Ancient Heritage Library & Book Intelligence 🏛️
-### *Universal Multi-Format Book Ingestion • Neural Vector RAG • Automated Literary Overviews • Grounded AI Conversations*
+<!-- 3D Holographic Animated Header Banner -->
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,10,25&height=280&section=header&text=🏛️%20The%20Ancient%20Heritage%20Library&fontSize=42&fontColor=fff&animation=twinkling&fontAlignY=38&desc=Universal%20Multi-Format%20Book%20Intelligence%20•%20Neural%20Vector%20RAG%20•%20Groq%20LPU&descFontSize=18&descAlignY=62&descAlign=50" alt="Ancient Heritage Library Banner" width="100%"/>
+</p>
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://book-ai-chatbot.onrender.com/)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![LangChain](https://img.shields.io/badge/LangChain-0.2.16-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://python.langchain.com/)
-[![Groq](https://img.shields.io/badge/Groq-LPU_Inference-F55036?style=for-the-badge&logo=groq&logoColor=white)](https://groq.com/)
-[![Pinecone](https://img.shields.io/badge/Pinecone-Serverless_Vector_DB-000000?style=for-the-badge&logo=pinecone&logoColor=white)](https://www.pinecone.io/)
-[![FastEmbed](https://img.shields.io/badge/FastEmbed-ONNX_Embeddings-4B8BBE?style=for-the-badge)](https://qdrant.github.io/fastembed/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+### 🌌 *Step into an Ancient Sanctuary of Knowledge Powered by Next-Gen Neural AI*
 
----
+<p align="center">
+  <a href="https://book-ai-chatbot.onrender.com/"><img src="https://img.shields.io/badge/🚀_Live_Demo-Render_Cloud-FF4B4B?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo"/></a>
+  <a href="https://streamlit.io"><img src="https://img.shields.io/badge/Streamlit-1.36.0-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"/></a>
+  <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
+  <a href="https://groq.com"><img src="https://img.shields.io/badge/Groq_LPU-Ultra_Fast_Inference-F55036?style=for-the-badge&logo=groq&logoColor=white" alt="Groq"/></a>
+  <a href="https://pinecone.io"><img src="https://img.shields.io/badge/Pinecone-Serverless_Vector_DB-000000?style=for-the-badge&logo=pinecone&logoColor=white" alt="Pinecone"/></a>
+  <a href="https://qdrant.github.io/fastembed/"><img src="https://img.shields.io/badge/FastEmbed-Local_ONNX_384d-4B8BBE?style=for-the-badge" alt="FastEmbed"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge" alt="License"/></a>
+</p>
+
+<p align="center">
+  <a href="#-overview">Overview</a> •
+  <a href="#-key-capabilities">Key Features</a> •
+  <a href="#-3d-architecture-pipeline">Architecture</a> •
+  <a href="#-supported-manuscript-formats">Formats</a> •
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-author--connect">Author</a>
+</p>
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%"/>
 
 </div>
 
+---
+
 ## 📖 Overview
 
-**The Ancient Heritage Library & Book Intelligence** is an advanced Retrieval-Augmented Generation (RAG) system built with **Streamlit**, **LangChain**, **Groq LPU Inference**, and **FastEmbed**.
+**The Ancient Heritage Library & Book Intelligence** is an enterprise-grade Retrieval-Augmented Generation (RAG) ecosystem. It unites timeless historical manuscripts and contemporary literature with cutting-edge **Groq LPU Inference**, **FastEmbed ONNX Embeddings**, and an **in-memory normalized vector search engine**.
 
-It bridges timeless classic literature with contemporary neural search. Upload any book or manuscript in **any format (PDF, EPUB, DOCX, TXT, Markdown, HTML)** to instantly receive a structured deep literary overview, character breakdowns, structural analysis, and interactive grounded Q&A with verbatim citations — or explore the pre-indexed cloud archive containing 13,000+ vector chunks across 8 timeless canonical masterworks.
-
----
-
-## 🌟 Key Features
-
-### 1. 📤 Universal Multi-Format Book Upload
-- **Any Document Format**: Seamlessly extracts text from:
-  - 📕 **PDF** (`.pdf`) — Page-by-page extraction via `pypdf`.
-  - 📗 **EPUB** (`.epub`) — Chapter-by-chapter XML/HTML extraction via `BeautifulSoup` & `zipfile`.
-  - 📘 **Word DOCX** (`.docx`, `.doc`) — Document paragraph and table structure via `python-docx`.
-  - 📄 **Plain Text & Markdown** (`.txt`, `.md`, `.rst`) — Multi-encoding auto-fallback (UTF-8, Latin-1, CP1252).
-  - 🌐 **Web HTML** (`.html`, `.htm`) — DOM parsing and script/style stripping.
-- **Reading Intelligence Metrics**: Real-time calculation of total word count, section/page count, and estimated reading time.
-- **Client-Side Privacy**: Custom uploaded manuscripts are embedded and stored in-memory, avoiding unsolicited third-party cloud uploads.
-
-### 2. 📑 Automated Deep Book Overview & Intelligence
-Upon uploading any book, the AI automatically analyzes the narrative to produce:
-- 📖 **Executive Synopsis**: A 2-3 paragraph synthesis of the book's core premise, conflict, and arc.
-- 🎭 **Key Figures & Entities**: Main protagonists, antagonists, character dynamics, and motivations.
-- 💡 **Core Themes & Cultural Motifs**: Philosophical and thematic insights.
-- 🗺️ **Narrative Arc & Structure**: Structural progression from opening to climax and resolution.
-- ⭐ **Key Takeaways & Highlights**: Memorable quotes and lessons.
-- 📥 **1-Click Markdown Export**: Download the comprehensive analysis report as a formatted `.md` file.
-
-### 3. 💬 Grounded Q&A Chatbot with Source Citations
-- **Contextual Query Reformulation**: Resolves multi-turn conversational pronouns into standalone queries.
-- **Exact Passage Citations**: Expandable citation cards showing verbatim text excerpts, section/page numbers, and semantic similarity scores.
-- **Quick Starter Pills**: 1-click suggested prompts for immediate inquiries.
-- **Zero Hallucination Guardrails**: Answers strictly grounded in retrieved book excerpts.
-
-### 4. 🏛️ Pre-Indexed Classic Tomes Cloud Archive
-Search across 13,000+ pre-indexed vector embeddings in Pinecone:
-1. *Pride and Prejudice* (Jane Austen)
-2. *Frankenstein* (Mary Shelley)
-3. *Little Women* (Louisa May Alcott)
-4. *Crime and Punishment* (Fyodor Dostoevsky)
-5. *The Mahabharata* (Vyasa)
-6. *Bhagavad Gita*
-7. *Sense and Sensibility* (Jane Austen)
-8. *The Yoga-Vasishtha Maharamayana* (Valmiki)
+Upload any document in **any format (PDF, EPUB, DOCX, TXT, Markdown, HTML)** to instantly unlock:
+- 📑 **Comprehensive Literary Overviews** (Executive synopsis, core themes, key figures, narrative arc, takeaways).
+- 💬 **Grounded Conversational Q&A** with verbatim citations, page tracking, and zero hallucination risk.
+- 🏛️ **Timeless Classics Archive** pre-indexed across 13,000+ vector chunks in Pinecone Serverless.
 
 ---
 
-## 🏛️ System Architecture
+## 🌟 Key Capabilities
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <div align="center">
+        <h3>📤 Universal Multi-Format Upload</h3>
+      </div>
+      <ul>
+        <li><b>PDF, EPUB, DOCX, TXT, MD, HTML</b> — Native client-side parsing without requiring third-party cloud uploads.</li>
+        <li><b>Reading Metrics Engine</b>: Instant calculation of total word count, section/page count, and estimated reading time.</li>
+        <li><b>Fast ONNX Embeddings</b>: Local vector generation using <code>BAAI/bge-small-en-v1.5</code>.</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <div align="center">
+        <h3>📑 Automated Deep Book Analysis</h3>
+      </div>
+      <ul>
+        <li><b>Executive Synopsis</b>: Core premise, central conflict, and thematic resolution.</li>
+        <li><b>Key Figures & Dynamics</b>: Motivations, character arcs, and roles.</li>
+        <li><b>Structural Narrative Map</b>: Critical turning points & literary takeaways.</li>
+        <li><b>1-Click Export</b>: Download full analysis reports in clean Markdown.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <div align="center">
+        <h3>💬 Grounded Q&A with Citations</h3>
+      </div>
+      <ul>
+        <li><b>Conversational Query Rewriter</b>: Resolves follow-up pronouns (he, she, it) in multi-turn dialogues.</li>
+        <li><b>Transparent Citations</b>: Expandable cards displaying exact manuscript passages and relevance scores.</li>
+        <li><b>Starter Question Pills</b>: 1-click prompts for immediate narrative insights.</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <div align="center">
+        <h3>🏛️ Pre-Indexed Classics Cloud Archive</h3>
+      </div>
+      <ul>
+        <li><b>13,000+ Pre-Indexed Vectors</b> across 8 timeless masterworks in Pinecone.</li>
+        <li><b>Dual-Mode Architecture</b>: Seamlessly switch between custom uploaded books and canonical classics.</li>
+        <li><b>Sub-Second Retrieval</b>: Powered by Pinecone Serverless on AWS.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🌌 3D Architecture Pipeline
 
 ```mermaid
 flowchart TD
-    subgraph INGESTION["1. Multi-Format Ingestion"]
-        A[Book / Manuscript] --> B{Format Check}
-        B -->|PDF| C1[pypdf Page Extractor]
-        B -->|EPUB| C2[zipfile + BeautifulSoup]
-        B -->|DOCX| C3[python-docx Parser]
-        B -->|TXT / MD| C4[Multi-Encoding Decoder]
-        B -->|HTML| C5[HTML DOM Cleaner]
+    %% Styling Configuration
+    classDef inputStyle fill:#2d1d12,stroke:#d4af37,stroke-width:2px,color:#fff;
+    classDef processStyle fill:#1a281e,stroke:#52b788,stroke-width:2px,color:#fff;
+    classDef vectorStyle fill:#16222f,stroke:#4895ef,stroke-width:2px,color:#fff;
+    classDef outputStyle fill:#2c1b2d,stroke:#f72585,stroke-width:2px,color:#fff;
+
+    subgraph INGESTION ["📥 1. Universal Document Ingestion"]
+        A["📄 Document / Manuscript<br/>(PDF, EPUB, DOCX, TXT, HTML)"]:::inputStyle --> B{"Format Classifier"}:::inputStyle
+        B -->|PDF| C1["pypdf Page Extractor"]:::processStyle
+        B -->|EPUB| C2["zipfile + BeautifulSoup"]:::processStyle
+        B -->|DOCX| C3["python-docx Structure"]:::processStyle
+        B -->|TXT/MD| C4["Multi-Encoding Auto-Decode"]:::processStyle
+        B -->|HTML| C5["DOM Script/Style Stripper"]:::processStyle
     end
 
-    subgraph EMBEDDINGS["2. Local Neural Embeddings"]
-        C1 & C2 & C3 & C4 & C5 --> D[RecursiveCharacterTextSplitter\n900-char chunks, 150 overlap]
-        D --> E[FastEmbed ONNX\nBAAI/bge-small-en-v1.5]
-        E --> F[(In-Memory Normalized\nCosine Vector Index)]
+    subgraph VECTOR ["⚡ 2. Local Neural Embedding & In-Memory Index"]
+        C1 & C2 & C3 & C4 & C5 --> D["RecursiveCharacterTextSplitter<br/>(900-char chunks, 150-char overlap)"]:::processStyle
+        D --> E["FastEmbed ONNX<br/>(BAAI/bge-small-en-v1.5)"]:::vectorStyle
+        E --> F[("In-Memory Normalized<br/>Cosine Similarity Matrix")]:::vectorStyle
     end
 
-    subgraph SYNTHESIS["3. AI Intelligence & RAG Synthesis"]
-        G[User Query / Upload] --> H[Standalone Query Rewriter]
-        H --> I[Fast Cosine Similarity Search]
-        F --> I
-        I --> J[Top-K Relevance Chunks]
-        J --> K[Groq LPU Inference\nopenai/gpt-oss-120b]
-        K --> L[Grounded Answer + Citations]
+    subgraph ARCHIVE ["🏛️ 3. Pinecone Cloud Archive"]
+        Z["8 Canonical Masterworks<br/>(13,000+ Vectors)"]:::vectorStyle --> Y[("Pinecone Serverless Index<br/>'enchanted-library'")]:::vectorStyle
+    end
+
+    subgraph RAG ["🧠 4. Conversational RAG & Groq LPU Inference"]
+        Q["User Query / Follow-up"]:::inputStyle --> R["Contextual Query Rewriter"]:::processStyle
+        R --> S["Vector Search Engine"]:::vectorStyle
+        F -.-> S
+        Y -.-> S
+        S --> T["Top-K Passage Excerpts"]:::processStyle
+        T & Q --> U["Groq LPU Synthesis<br/>(openai/gpt-oss-120b)"]:::outputStyle
+        U --> V["✨ Grounded Answer + Source Citations + Analysis Report"]:::outputStyle
     end
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 📚 Supported Manuscript Formats
 
-| Purpose | Technology |
-|---|---|
-| **Frontend UI** | Streamlit (Ancient Cultural Heritage Theme) |
-| **LLM Inference** | Groq LPU (`openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `qwen/qwen3.8-27b`) |
-| **Embeddings** | `fastembed` (ONNX Runtime, `BAAI/bge-small-en-v1.5`, 384-dim) |
-| **Custom Vector Search** | Normalized Numpy Matrix Cosine-Similarity Engine |
-| **Cloud Vector Store** | Pinecone Serverless |
-| **Document Parsers** | `pypdf`, `python-docx`, `beautifulsoup4`, `zipfile` |
-| **Orchestration** | LangChain Core & Community |
-| **Deployment** | Render / Streamlit Cloud |
+<div align="center">
+
+| Format | Extension | Extraction Engine | Capabilities |
+| :--- | :---: | :---: | :--- |
+| **Portable Document** | `.pdf` | `pypdf.PdfReader` | Page-by-page text parsing with exact page metadata |
+| **Electronic Publication** | `.epub` | `zipfile` + `BeautifulSoup` | Chapter-order XML/XHTML extraction |
+| **Microsoft Word** | `.docx`, `.doc` | `python-docx` | Paragraph & table content extraction |
+| **Plain Text & Markdown** | `.txt`, `.md`, `.rst` | Multi-Encoding Decoder | UTF-8, UTF-8-SIG, Latin-1, CP1252 auto-detection |
+| **Web Hypertext** | `.html`, `.htm` | `BeautifulSoup` | Clean semantic DOM parsing |
+
+</div>
 
 ---
 
-## 🚀 Quick Start Guide
+## 🏛️ Pre-Indexed Canonical Classics
 
-### 1. Prerequisites
-- Python 3.10 or higher
-- A free Groq API key from [Groq Console](https://console.groq.com)
-- *(Optional for Classic Archive)* Pinecone API key from [Pinecone Console](https://app.pinecone.io)
+The Pinecone Cloud archive includes full vector indexing for:
 
-### 2. Installation
+<div align="center">
+
+| # | Masterwork | Author | Genre / Period |
+| :-: | :--- | :--- | :--- |
+| 1 | **Pride and Prejudice** | Jane Austen | Romantic Classic (1813) |
+| 2 | **Frankenstein** | Mary Shelley | Gothic Science Fiction (1818) |
+| 3 | **Little Women** | Louisa May Alcott | Coming-of-Age Fiction (1868) |
+| 4 | **Crime and Punishment** | Fyodor Dostoevsky | Psychological Realism (1866) |
+| 5 | **The Mahabharata** | Krishna-Dwaipayana Vyasa | Ancient Epic & Philosophy |
+| 6 | **Bhagavad Gita** | Vyasa | Spiritual & Philosophical Classic |
+| 7 | **Sense and Sensibility** | Jane Austen | Classic Literary Fiction (1811) |
+| 8 | **The Yoga-Vasishtha Maharamayana** | Valmiki | Ancient Vedantic Discourse |
+
+</div>
+
+---
+
+## 🛠️ Tech Stack & Dependencies
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=python,pytorch,git,github,docker,vscode,markdown,html,css" />
+</p>
+
+- **Frontend & Visuals**: Streamlit (Ancient Heritage Stone & Gold Aesthetic)
+- **LLM Synthesis**: Groq LPU (`openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `qwen/qwen3.8-27b`)
+- **Embeddings**: `fastembed` ONNX Runtime (`BAAI/bge-small-en-v1.5`, 384 dimensions)
+- **Vector Stores**: In-Memory Normalized Numpy Cosine Matrix & Pinecone Serverless
+- **Orchestration**: LangChain Core & Community
+- **Document Parsers**: `pypdf`, `python-docx`, `beautifulsoup4`, `zipfile`
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone the Repository
 ```bash
-# Clone the repository
 git clone https://github.com/Aniketyadav29/Book_AI_Chatbot.git
 cd Book_AI_Chatbot/book-ai-chatbot-main
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create .env from .env.example
-cp .env.example .env
 ```
 
-### 3. Environment Variables Configuration
-Configure `.env` with your API keys:
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure API Credentials
+Create a `.env` file in `book-ai-chatbot-main`:
 ```env
+# Free Groq API key: https://console.groq.com
 GROQ_API_KEY=gsk_your_groq_api_key_here
+
+# Free Pinecone API key: https://app.pinecone.io
 PINECONE_API_KEY=pcsk_your_pinecone_api_key_here
 ```
 
-### 4. Run Locally
+### 4. Launch the App
 ```bash
-# Using PowerShell launcher:
+# Windows One-Click Launcher:
 .\run.ps1
 
 # Or with Streamlit directly:
 python -m streamlit run app.py
 ```
-
-Open your browser at `http://localhost:8501`.
-
----
-
-## 📜 Ingestion Pipeline (For Pre-Indexed Classic Tomes)
-
-To re-ingest or add new books to your Pinecone index:
-```bash
-python ingest.py
-```
-This downloads canonical works from Project Gutenberg, chunks them with `RecursiveCharacterTextSplitter`, creates vector embeddings with FastEmbed, and upserts them to Pinecone.
+Open **`http://localhost:8501`** in your browser.
 
 ---
 
-## 🧪 Verification & Automated Tests
+## 🧪 Automated Verification Suite
 
-To run the automated verification suite across all format parsers, vector search, and Groq LLM:
+Run full end-to-end tests across document extractors, in-memory vector similarity, Groq LLM synthesis, and Pinecone:
+
 ```bash
 python test_verification.py
 ```
 
+<details>
+<summary><b>🔍 View Test Suite Output Preview</b></summary>
+
+```text
+============================================================
+TEST 1: Multi-Format Document Extraction
+============================================================
+[OK] TXT Extraction passed! Characters: 205
+[OK] HTML Extraction passed! Characters: 95
+[OK] DOCX Extraction passed! Characters: 100
+[OK] EPUB Extraction passed! Characters: 81
+[OK] PDF Handler verified!
+
+============================================================
+TEST 2: In-Memory FastEmbed Vector Indexing & Search
+============================================================
+Query: 'Who translated the ancient glyphs?'
+Top Match (Score: 0.767): Dr. Aris Thorne translated the ancient glyphs...
+[OK] In-memory vector search passed!
+
+============================================================
+TEST 3: Groq LLM Book Overview & Grounded Q&A
+============================================================
+[OK] Book Overview generated successfully!
+[OK] Grounded Q&A verified successfully!
+
+============================================================
+TEST 4: Pinecone Classic Library Archive Retriever
+============================================================
+Retrieved 3 docs from Pinecone 'enchanted-library'
+[OK] Pinecone classic library retriever verified!
+
+============================================================
+[SUCCESS] ALL 4 TEST SUITES PASSED PERFECTLY!
+============================================================
+```
+</details>
+
 ---
 
-## 👤 Author & Maintainer
+## 👤 Author & Connect
 
-- **Author**: Aniket Yadav
-- **Email**: [anikety7905@gmail.com](mailto:anikety7905@gmail.com)
-- **GitHub**: [@Aniketyadav29](https://github.com/Aniketyadav29)
-- **Project Repository**: [https://github.com/Aniketyadav29/Book_AI_Chatbot.git](https://github.com/Aniketyadav29/Book_AI_Chatbot.git)
+<div align="center">
+
+### **Aniket Yadav**
+*AI & Full-Stack Developer*
+
+<a href="mailto:anikety7905@gmail.com"><img src="https://img.shields.io/badge/Email-anikety7905%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
+<a href="https://github.com/Aniketyadav29"><img src="https://img.shields.io/badge/GitHub-Aniketyadav29-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
+<a href="https://book-ai-chatbot.onrender.com/"><img src="https://img.shields.io/badge/Live_App-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black" alt="Live App"/></a>
 
 ---
 
-## 📄 License
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,10,25&height=120&section=footer" width="100%"/>
+</p>
 
-This project is licensed under the [MIT License](LICENSE).
+⭐ **Star this repository if you find it helpful!**
+
+</div>
