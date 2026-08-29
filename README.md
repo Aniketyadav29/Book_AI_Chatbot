@@ -11,8 +11,6 @@
 [![FastEmbed](https://img.shields.io/badge/FastEmbed-ONNX_Embeddings-4B8BBE?style=for-the-badge)](https://qdrant.github.io/fastembed/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**[🔗 Live Application (Render Deployment)](https://book-ai-chatbot.onrender.com/)** • **[📖 Repository](https://github.com/Aniketyadav29/Book_AI_Chatbot.git)**
-
 ---
 
 </div>
