@@ -23,8 +23,7 @@ from langchain_core.embeddings import Embeddings
 from fastembed import TextEmbedding
 from langchain_pinecone import PineconeVectorStore
 from langchain_groq import ChatGroq
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import SystemMessage, HumanMessage
 
 # ── Streamlit Page Config ─────────────────────────────────────────────────────
 st.set_page_config(
@@ -493,8 +492,7 @@ def generate_book_overview(full_text: str, book_name: str, llm: ChatGroq) -> str
     else:
         sampled_content = full_text
 
-    overview_prompt = ChatPromptTemplate.from_messages([
-        ("system", """You are a master literary scholar, historian, and cultural analyst. Provide a comprehensive, captivating, and insightful analytical overview of the provided book text.
+    sys_msg = SystemMessage(content="""You are a master literary scholar, historian, and cultural analyst. Provide a comprehensive, captivating, and insightful analytical overview of the provided book text.
 
 Structure your response using the following rich markdown sections:
 ## 📖 Executive Synopsis
@@ -512,12 +510,12 @@ High-level map of the beginning, critical turning points, and resolution or take
 ## ⭐ Key Takeaways & Enduring Insights
 3-5 pivotal insights, memorable quotes, or timeless lessons from the book.
 
-Format with clear markdown headings, bullet points, and authoritative prose."""),
-        ("human", "Book Title / File: {book_name}\n\nBook Content:\n{content}\n\nPlease generate the comprehensive Book Overview & Analysis:")
-    ])
+Format with clear markdown headings, bullet points, and authoritative prose.""")
 
-    chain = overview_prompt | llm | StrOutputParser()
-    return chain.invoke({"book_name": book_name, "content": sampled_content})
+    user_msg = HumanMessage(content=f"Book Title / File: {book_name}\n\nBook Content:\n{sampled_content}\n\nPlease generate the comprehensive Book Overview & Analysis:")
+
+    response = llm.invoke([sys_msg, user_msg])
+    return response.content
 
 
 # ── Session State Initialization ──────────────────────────────────────────────
@@ -810,12 +808,9 @@ with tab_upload:
                             history_list = st.session_state.uploaded_chat_history[:-1]
                             if len(history_list) > 0:
                                 history_text = "\n".join([f"{m['role'].capitalize()}: {m['content']}" for m in history_list[-4:]])
-                                rewrite_prompt = ChatPromptTemplate.from_messages([
-                                    ("system", "You are an assistant that reformulates follow-up questions into clear, standalone search queries."),
-                                    ("human", "Recent conversation:\n{history}\n\nUser's new question: '{question}'\n\nRewrite this follow-up question into a clear, standalone search query including character names or concepts. Return ONLY the standalone search query without preamble.")
-                                ])
-                                rewrite_chain = rewrite_prompt | llm | StrOutputParser()
-                                standalone_q = rewrite_chain.invoke({"history": history_text, "question": query_to_process})
+                                rewrite_sys = SystemMessage(content="You are an assistant that reformulates follow-up questions into clear, standalone search queries including character names or concepts. Return ONLY the standalone search query without preamble.")
+                                rewrite_human = HumanMessage(content=f"Recent conversation:\n{history_text}\n\nUser's new question: '{query_to_process}'")
+                                standalone_q = llm.invoke([rewrite_sys, rewrite_human]).content.strip()
                             else:
                                 standalone_q = query_to_process
                                 history_text = "No prior history."
@@ -832,29 +827,24 @@ with tab_upload:
                                 for idx, s in enumerate(retrieved_snippets)
                             ])
                             
-                            qa_prompt = ChatPromptTemplate.from_messages([
-                                ("system", """You are an insightful, highly knowledgeable literary and historical scholar discussing the uploaded manuscript.
+                            qa_sys = SystemMessage(content=f"""You are an insightful, highly knowledgeable literary and historical scholar discussing the uploaded manuscript titled: "{book['filename']}".
 
 RULES:
 1. Answer directly, eloquently, and authoritatively in your own authentic voice.
 2. Ground your response firmly in the provided Manuscript Excerpts. Weave in direct details and specific passages where helpful.
-3. If the excerpts do not contain the answer, synthesize what is known honestly or explain clearly based on the available text. Never fabricate contradictory facts.
-4. Maintain a respectful, articulate, and engaging tone.
+3. If the user asks for translations, explanations, or specific details, fulfill their request thoroughly and clearly.
+4. If the excerpts do not contain the answer, synthesize what is known honestly or explain clearly based on the available text. Never fabricate contradictory facts.
+5. Maintain a respectful, articulate, and engaging tone.
 
 Manuscript Excerpts:
-{context}
+{context_text}
 
 Conversation History:
-{history}"""),
-                                ("human", "{question}")
-                            ])
-                            
-                            qa_chain = qa_prompt | llm | StrOutputParser()
-                            answer = qa_chain.invoke({
-                                "context": context_text,
-                                "history": history_text,
-                                "question": standalone_q
-                            })
+{history_text}""")
+
+                            qa_human = HumanMessage(content=standalone_q)
+                            response = llm.invoke([qa_sys, qa_human])
+                            answer = response.content
                             
                             st.markdown(answer)
                             
@@ -933,12 +923,9 @@ with tab_classic:
                             history_list = st.session_state.classic_chat_history[:-1]
                             if len(history_list) > 0:
                                 history_text = "\n".join([f"{msg['role'].capitalize()}: {msg['content']}" for msg in history_list[-4:]])
-                                rewrite_prompt = ChatPromptTemplate.from_messages([
-                                    ("system", "You are an assistant that reformulates follow-up questions into clear, standalone questions with character names or titles."),
-                                    ("human", "Recent conversation:\n{history}\n\nUser's new question: '{question}'\n\nRewrite this follow-up question into a clear, standalone question that includes specific character names or book titles. Return ONLY the rewritten question without extra words.")
-                                ])
-                                rewrite_chain = rewrite_prompt | llm | StrOutputParser()
-                                standalone_question = rewrite_chain.invoke({"history": history_text, "question": classic_prompt})
+                                rewrite_sys = SystemMessage(content="You are an assistant that reformulates follow-up questions into clear, standalone questions that include specific character names or book titles. Return ONLY the rewritten question without extra words.")
+                                rewrite_human = HumanMessage(content=f"Recent conversation:\n{history_text}\n\nUser's new question: '{classic_prompt}'")
+                                standalone_question = llm.invoke([rewrite_sys, rewrite_human]).content.strip()
                             else:
                                 standalone_question = classic_prompt
                                 history_text = "No previous history."
@@ -947,7 +934,7 @@ with tab_classic:
                             context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
                             snippet_texts = [doc.page_content for doc in retrieved_docs]
                             
-                            system_prompt = """You are a knowledgeable literary and cultural scholar helping a user explore classic books in the archive. Answer the way a well-read expert would in conversation — direct, confident, and in your own voice.
+                            sys_msg = SystemMessage(content=f"""You are a knowledgeable literary and cultural scholar helping a user explore classic books in the archive. Answer the way a well-read expert would in conversation — direct, confident, and in your own voice.
 
 RULES:
 1. Never narrate your own internal process (e.g. avoid "based on the text", "the snippet says"). Answer naturally and authoritatively.
@@ -956,24 +943,16 @@ RULES:
 4. On rare occasions where you are genuinely unsure, acknowledge it briefly.
 
 Conversation History:
-{history}
+{history_text}
 
 Context:
-{context}"""
+{context_text}""")
+
+                            user_msg = HumanMessage(content=standalone_question)
+                            response = llm.invoke([sys_msg, user_msg])
+                            response_content = response.content
                             
-                            prompt_template = ChatPromptTemplate.from_messages([
-                                ("system", system_prompt),
-                                ("human", "{input}")
-                            ])
-                            
-                            chain = prompt_template | llm | StrOutputParser()
-                            response = chain.invoke({
-                                "context": context_text,
-                                "history": history_text,
-                                "input": standalone_question
-                            })
-                            
-                            st.markdown(response)
+                            st.markdown(response_content)
                             
                             with st.expander("👀 See how the AI thought & what it read"):
                                 st.write(f"**Interpreted Question:** `{standalone_question}`")

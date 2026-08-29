@@ -32,6 +32,7 @@ from app import (
     FastEmbedEmbeddings
 )
 from langchain_groq import ChatGroq
+from langchain_core.messages import SystemMessage, HumanMessage
 
 class MockUploadedFile:
     def __init__(self, name: str, data: bytes):
