@@ -1,0 +1,26 @@
+# Secrets & Environment Variables
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Temporary files
+temp_*.txt
+*.tmp
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
