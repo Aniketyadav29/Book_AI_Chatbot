@@ -283,9 +283,19 @@ h1 {
 """
 st.markdown(ancient_theme_css, unsafe_allow_html=True)
 
-# ── API Key & Model Configuration ─────────────────────────────────────────────
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
+def get_secret(key_name: str):
+    val = os.environ.get(key_name)
+    if val:
+        return val
+    try:
+        if hasattr(st, "secrets") and key_name in st.secrets:
+            return str(st.secrets[key_name])
+    except Exception:
+        pass
+    return None
+
+GROQ_API_KEY = get_secret("GROQ_API_KEY")
+PINECONE_API_KEY = get_secret("PINECONE_API_KEY")
 
 AVAILABLE_GROQ_MODELS = [
     "openai/gpt-oss-120b",
