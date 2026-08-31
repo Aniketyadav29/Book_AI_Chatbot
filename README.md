@@ -8,7 +8,6 @@
 ### 🌌 *Step into an Ancient Sanctuary of Knowledge Powered by Next-Gen Neural AI*
 
 <p align="center">
-  <a href="https://book-ai-chatbot.onrender.com/"><img src="https://img.shields.io/badge/🚀_Live_Demo-Render_Cloud-FF4B4B?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo"/></a>
   <a href="https://streamlit.io"><img src="https://img.shields.io/badge/Streamlit-1.36.0-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"/></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
   <a href="https://groq.com"><img src="https://img.shields.io/badge/Groq_LPU-Ultra_Fast_Inference-F55036?style=for-the-badge&logo=groq&logoColor=white" alt="Groq"/></a>
