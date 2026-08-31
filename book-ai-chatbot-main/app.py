@@ -498,22 +498,8 @@ def search_uploaded_book(query: str, index_data: Dict[str, Any], embedding_model
     return results
 
 
-# ── AI Book Overview Generator ────────────────────────────────────────────────
-def generate_book_overview(full_text: str, book_name: str, llm: ChatGroq) -> str:
-    """
-    Generates a structured, deep literary analysis and overview of the book.
-    """
-    total_len = len(full_text)
-    if total_len > 25000:
-        chunk1 = full_text[:10000]
-        mid_idx = total_len // 2
-        chunk2 = full_text[mid_idx - 5000 : mid_idx + 5000]
-        chunk3 = full_text[-10000:]
-        sampled_content = f"--- BEGINNING SECTION ---\n{chunk1}\n\n--- MIDDLE SECTION ---\n{chunk2}\n\n--- CONCLUSION / END SECTION ---\n{chunk3}"
-    else:
-        sampled_content = full_text
-
-    sys_msg = SystemMessage(content="""You are a master literary scholar, historian, and cultural analyst. Provide a comprehensive, captivating, and insightful analytical overview of the provided book text.
+# ── Language Prompt Helpers ───────────────────────────────────────────────────
+LANG_OVERVIEW_PROMPT_ENGLISH = """You are a master literary scholar, historian, and cultural analyst. Provide a comprehensive, captivating, and insightful analytical overview of the provided book text.
 
 Structure your response using the following rich markdown sections:
 ## 📖 Executive Synopsis
@@ -531,8 +517,63 @@ High-level map of the beginning, critical turning points, and resolution or take
 ## ⭐ Key Takeaways & Enduring Insights
 3-5 pivotal insights, memorable quotes, or timeless lessons from the book.
 
-Format with clear markdown headings, bullet points, and authoritative prose.""")
+Format with clear markdown headings, bullet points, and authoritative prose."""
 
+LANG_OVERVIEW_PROMPT_HINGLISH = """Aap ek mast literary scholar aur cultural analyst hain jo books ko desi andaz mein samjhaate hain. Is book ka ek zabardast, detailed analysis do — lekin language Hinglish mein honi chahiye (Hindi aur English ka natural mix, jaise hum normally bolte hain).
+
+Apna response in sections mein dena:
+## 📖 Kahani Ka Nichodh (Executive Synopsis)
+2-3 paragraphs mein bolo — book ka core kya hai, conflict kya hai, aur kahani kahan le jaati hai. Desi style mein, as if yaar ko bata rahe ho.
+
+## 🎭 Mukhya Kirdar aur Log (Key Figures)
+Main characters ke baare mein batao — kaun hai, kya chahte hain, aur unka role kya hai. Relatable examples do.
+
+## 💡 Bade Vichaar aur Themes (Core Themes)
+Book ke bade philosophical ya cultural themes ko simple, relatable Hinglish mein explain karo.
+
+## 🗺️ Kahani Ki Line (Narrative Arc)
+Shuru se aakhir tak ka ek clear map — kya hua, turning points kya the, aur khatma kaise hua.
+
+## ⭐ Seedhi Baatein — Key Takeaways
+3-5 important lessons, memorable lines, ya timeless insights jo book se milti hain.
+
+Format: Markdown headings, bullet points use karo. Tone casual, engaging, aur desi rakhna — jaise koi padha-likha dost bata raha ho!"""
+
+LANG_QA_SYSTEM_ENGLISH = """
+RULES:
+1. Answer directly, eloquently, and authoritatively in your own authentic voice.
+2. Ground your response firmly in the provided Manuscript Excerpts. Weave in direct details and specific passages where helpful.
+3. If the user asks for translations, explanations, or specific details, fulfill their request thoroughly and clearly.
+4. If the excerpts do not contain the answer, synthesize what is known honestly. Never fabricate contradictory facts.
+5. Maintain a respectful, articulate, and engaging tone."""
+
+LANG_QA_SYSTEM_HINGLISH = """
+RULES (Hinglish mein jawab dena hai):
+1. Jawab seedha, confident aur Hinglish mein do — jaise ek padha-likha dost bata raha ho. English aur Hindi naturally mix karo.
+2. Jo passages diye gaye hain unke basis par jawab do. Specific details aur scenes use karo.
+3. Agar user ne translation ya explanation maanga ho toh clearly aur clearly do.
+4. Agar passages mein jawab na ho toh honestly bolo — kabhi bhi galat facts mat banana.
+5. Tone friendly, engaging aur conversational rakhna — bilkul desi style mein!"""
+
+
+# ── AI Book Overview Generator ────────────────────────────────────────────────
+def generate_book_overview(full_text: str, book_name: str, llm: ChatGroq, language: str = "English") -> str:
+    """
+    Generates a structured, deep literary analysis and overview of the book.
+    Supports 'English' and 'Hinglish' language modes.
+    """
+    total_len = len(full_text)
+    if total_len > 25000:
+        chunk1 = full_text[:10000]
+        mid_idx = total_len // 2
+        chunk2 = full_text[mid_idx - 5000 : mid_idx + 5000]
+        chunk3 = full_text[-10000:]
+        sampled_content = f"--- BEGINNING SECTION ---\n{chunk1}\n\n--- MIDDLE SECTION ---\n{chunk2}\n\n--- CONCLUSION / END SECTION ---\n{chunk3}"
+    else:
+        sampled_content = full_text
+
+    overview_prompt = LANG_OVERVIEW_PROMPT_HINGLISH if language == "Hinglish" else LANG_OVERVIEW_PROMPT_ENGLISH
+    sys_msg = SystemMessage(content=overview_prompt)
     user_msg = HumanMessage(content=f"Book Title / File: {book_name}\n\nBook Content:\n{sampled_content}\n\nPlease generate the comprehensive Book Overview & Analysis:")
 
     response = llm.invoke([sys_msg, user_msg])
@@ -554,6 +595,9 @@ if "current_book_data" not in st.session_state:
 
 if "current_book_overview" not in st.session_state:
     st.session_state.current_book_overview = None
+
+if "response_language" not in st.session_state:
+    st.session_state.response_language = "English"
 
 
 # ── Sidebar Controls & Configuration ──────────────────────────────────────────
@@ -588,6 +632,26 @@ with st.sidebar:
         step=1,
         help="Number of book passages retrieved to answer each question."
     )
+    
+    st.markdown("---")
+    
+    # ── Language / Bhasha Selector ──────────────────────────────────────────
+    st.markdown("### 🌐 Explanation Language (Bhasha)")
+    lang_choice = st.radio(
+        "Select language / Bhasha chunein",
+        options=["🇬🇧 English", "🇮🇳 Hinglish (हिंग्लिश)"],
+        index=0 if st.session_state.response_language == "English" else 1,
+        help="Choose how the AI explains — formal English or fun Hinglish (Hindi + English mix)!",
+        label_visibility="collapsed",
+        key="lang_radio"
+    )
+    selected_language = "English" if lang_choice == "🇬🇧 English" else "Hinglish"
+    if selected_language != st.session_state.response_language:
+        st.session_state.response_language = selected_language
+        st.session_state.current_book_overview = None  # Reset overview to regenerate in new language
+    
+    if selected_language == "Hinglish":
+        st.caption("🎉 Hinglish mode ON! AI ab Hindi-English mix mein bolega — desi style mein!")
     
     st.markdown("---")
     
@@ -777,14 +841,16 @@ with tab_upload:
             generate_ov_clicked = st.button("🔮 Generate Deep Analysis", use_container_width=True)
         
         active_groq_key = get_secret("GROQ_API_KEY")
+        current_lang = st.session_state.get("response_language", "English")
+        spinner_msg = "Kitaabon ka vishleshan ho raha hai... zara ruko! 📖" if current_lang == "Hinglish" else "Analyzing themes, characters, structure, and narrative arc..."
         if generate_ov_clicked or (st.session_state.current_book_overview is None):
             if not active_groq_key:
                 st.warning("⚠️ Please provide a `GROQ_API_KEY` (in the sidebar, `.env`, or Streamlit Secrets) to generate the AI Book Overview.")
             else:
-                with st.spinner("Analyzing themes, characters, structure, and narrative arc..."):
+                with st.spinner(spinner_msg):
                     try:
                         llm = ChatGroq(model=selected_model, temperature=temperature, api_key=active_groq_key)
-                        overview_text = generate_book_overview(book["full_text"], book["filename"], llm)
+                        overview_text = generate_book_overview(book["full_text"], book["filename"], llm, language=current_lang)
                         st.session_state.current_book_overview = overview_text
                     except Exception as e:
                         st.error(f"Error generating overview: {e}")
@@ -883,14 +949,18 @@ with tab_upload:
                                 for idx, s in enumerate(retrieved_snippets)
                             ])
                             
-                            qa_sys = SystemMessage(content=f"""You are an insightful, highly knowledgeable literary and historical scholar discussing the uploaded manuscript titled: "{book['filename']}".
+                            current_lang = st.session_state.get("response_language", "English")
+                            lang_rules = LANG_QA_SYSTEM_HINGLISH if current_lang == "Hinglish" else LANG_QA_SYSTEM_ENGLISH
+                            
+                            lang_intro = (
+                                f'Aap ek mast literary aur historical scholar hain jo "{book["filename"]}" ke baare mein baat kar rahe hain.'
+                                if current_lang == "Hinglish"
+                                else f'You are an insightful, highly knowledgeable literary and historical scholar discussing the uploaded manuscript titled: "{book["filename"]}".'
+                            )
+                            
+                            qa_sys = SystemMessage(content=f"""{lang_intro}
 
-RULES:
-1. Answer directly, eloquently, and authoritatively in your own authentic voice.
-2. Ground your response firmly in the provided Manuscript Excerpts. Weave in direct details and specific passages where helpful.
-3. If the user asks for translations, explanations, or specific details, fulfill their request thoroughly and clearly.
-4. If the excerpts do not contain the answer, synthesize what is known honestly or explain clearly based on the available text. Never fabricate contradictory facts.
-5. Maintain a respectful, articulate, and engaging tone.
+{lang_rules}
 
 Manuscript Excerpts:
 {context_text}
@@ -994,20 +1064,24 @@ with tab_classic:
                             context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
                             snippet_texts = [doc.page_content for doc in retrieved_docs]
                             
-                            sys_msg = SystemMessage(content=f"""You are a knowledgeable literary and cultural scholar helping a user explore classic books in the archive. Answer the way a well-read expert would in conversation — direct, confident, and in your own voice.
+                            current_lang = st.session_state.get("response_language", "English")
+                            lang_rules = LANG_QA_SYSTEM_HINGLISH if current_lang == "Hinglish" else LANG_QA_SYSTEM_ENGLISH
+                            
+                            classic_intro = (
+                                "Aap ek jadoo-bhari archive ke scholar hain jo classic books ke baare mein desi, friendly style mein batate hain. Directly aur confidently jawab do, jaise ek padha-likha yaar bata raha ho."
+                                if current_lang == "Hinglish"
+                                else "You are a knowledgeable literary and cultural scholar helping a user explore classic books in the archive. Answer the way a well-read expert would in conversation \u2014 direct, confident, and in your own voice."
+                            )
+                            
+                            sys_msg = SystemMessage(content=f"""{classic_intro}
 
-RULES:
-1. Never narrate your own internal process (e.g. avoid "based on the text", "the snippet says"). Answer naturally and authoritatively.
-2. Combine the provided Context with canonical knowledge of the book to give a rich, accurate picture.
-3. Ground your answer in the provided Context whenever relevant, weaving in specific details smoothly.
-4. On rare occasions where you are genuinely unsure, acknowledge it briefly.
+{lang_rules}
 
 Conversation History:
 {history_text}
 
 Context:
 {context_text}""")
-
                             user_msg = HumanMessage(content=standalone_question)
                             response = llm.invoke([sys_msg, user_msg])
                             response_content = response.content
