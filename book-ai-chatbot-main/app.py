@@ -10,10 +10,16 @@ from bs4 import BeautifulSoup
 import docx
 from pypdf import PdfReader
 
-# Load .env file if present
+from pathlib import Path
+
+# Load .env file explicitly if present
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    env_file = Path(__file__).resolve().parent / ".env"
+    if env_file.exists():
+        load_dotenv(dotenv_path=env_file, override=True)
+    else:
+        load_dotenv(override=True)
 except ImportError:
     pass
 
@@ -284,18 +290,22 @@ h1 {
 st.markdown(ancient_theme_css, unsafe_allow_html=True)
 
 def get_secret(key_name: str):
+    # 1. Check session state (sidebar manual input)
+    if "api_keys" in st.session_state and st.session_state.api_keys.get(key_name):
+        return st.session_state.api_keys[key_name].strip()
+    # 2. Check OS environment variable
     val = os.environ.get(key_name)
-    if val:
-        return val
+    if val and val.strip() and not val.startswith("your_") and not val.startswith("gsk_your_") and not val.startswith("pcsk_your_"):
+        return val.strip()
+    # 3. Check Streamlit Secrets (for Streamlit Community Cloud)
     try:
         if hasattr(st, "secrets") and key_name in st.secrets:
-            return str(st.secrets[key_name])
+            sec_val = str(st.secrets[key_name]).strip()
+            if sec_val and not sec_val.startswith("your_"):
+                return sec_val
     except Exception:
         pass
     return None
-
-GROQ_API_KEY = get_secret("GROQ_API_KEY")
-PINECONE_API_KEY = get_secret("PINECONE_API_KEY")
 
 AVAILABLE_GROQ_MODELS = [
     "openai/gpt-oss-120b",
@@ -326,16 +336,17 @@ def get_embedding_model():
 
 
 @st.cache_resource(show_spinner=False)
-def load_pinecone_retriever(k: int = 8):
+def load_pinecone_retriever(k: int = 8, pinecone_key: str = None):
     """Load the Pinecone classic library retriever with error resilience."""
-    if not PINECONE_API_KEY:
+    key = pinecone_key or get_secret("PINECONE_API_KEY")
+    if not key:
         return None
     try:
         embedding_model = get_embedding_model()
         vector_db = PineconeVectorStore(
             index_name="enchanted-library",
             embedding=embedding_model,
-            pinecone_api_key=PINECONE_API_KEY
+            pinecone_api_key=key
         )
         return vector_db.as_retriever(search_kwargs={"k": k})
     except Exception as e:
@@ -529,6 +540,9 @@ Format with clear markdown headings, bullet points, and authoritative prose.""")
 
 
 # ── Session State Initialization ──────────────────────────────────────────────
+if "api_keys" not in st.session_state:
+    st.session_state.api_keys = {}
+
 if "uploaded_chat_history" not in st.session_state:
     st.session_state.uploaded_chat_history = []
 
@@ -577,16 +591,46 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # API Status
+    # API Status & Interactive Key Input
     st.markdown("### 🔐 System Status")
-    groq_ok = bool(GROQ_API_KEY)
-    pinecone_ok = bool(PINECONE_API_KEY)
+    groq_active_key = get_secret("GROQ_API_KEY")
+    pinecone_active_key = get_secret("PINECONE_API_KEY")
+    
+    groq_ok = bool(groq_active_key)
+    pinecone_ok = bool(pinecone_active_key)
     
     st.markdown(f"**Groq API:** {'🟢 Connected' if groq_ok else '🔴 Missing Key'}")
     st.markdown(f"**Pinecone Archive:** {'🟢 Connected' if pinecone_ok else '🟡 Missing Key'}")
     
+    with st.expander("🔑 Enter / Update API Keys", expanded=(not groq_ok)):
+        st.caption("Enter keys below if not in `.env` or Streamlit Secrets:")
+        
+        user_groq = st.text_input(
+            "Groq API Key",
+            value=st.session_state.api_keys.get("GROQ_API_KEY", "") or (groq_active_key if groq_active_key else ""),
+            type="password",
+            placeholder="gsk_...",
+            help="Free Groq API key from https://console.groq.com"
+        )
+        if user_groq and user_groq != st.session_state.api_keys.get("GROQ_API_KEY"):
+            st.session_state.api_keys["GROQ_API_KEY"] = user_groq.strip()
+            os.environ["GROQ_API_KEY"] = user_groq.strip()
+            st.rerun()
+            
+        user_pinecone = st.text_input(
+            "Pinecone API Key (Optional)",
+            value=st.session_state.api_keys.get("PINECONE_API_KEY", "") or (pinecone_active_key if pinecone_active_key else ""),
+            type="password",
+            placeholder="pcsk_...",
+            help="Required only for Canonical Classics archive search (https://app.pinecone.io)"
+        )
+        if user_pinecone and user_pinecone != st.session_state.api_keys.get("PINECONE_API_KEY"):
+            st.session_state.api_keys["PINECONE_API_KEY"] = user_pinecone.strip()
+            os.environ["PINECONE_API_KEY"] = user_pinecone.strip()
+            st.rerun()
+
     if not groq_ok:
-        st.error("⚠️ GROQ_API_KEY is not set in `.env`.")
+        st.error("⚠️ `GROQ_API_KEY` is not detected. Enter it above or add it to `.env` / Streamlit Secrets.")
     
     st.markdown("---")
     
@@ -732,13 +776,14 @@ with tab_upload:
         with col_ov_btn:
             generate_ov_clicked = st.button("🔮 Generate Deep Analysis", use_container_width=True)
         
+        active_groq_key = get_secret("GROQ_API_KEY")
         if generate_ov_clicked or (st.session_state.current_book_overview is None):
-            if not GROQ_API_KEY:
-                st.warning("⚠️ Please provide a GROQ_API_KEY to generate the AI Book Overview.")
+            if not active_groq_key:
+                st.warning("⚠️ Please provide a `GROQ_API_KEY` (in the sidebar, `.env`, or Streamlit Secrets) to generate the AI Book Overview.")
             else:
                 with st.spinner("Analyzing themes, characters, structure, and narrative arc..."):
                     try:
-                        llm = ChatGroq(model=selected_model, temperature=temperature, api_key=GROQ_API_KEY)
+                        llm = ChatGroq(model=selected_model, temperature=temperature, api_key=active_groq_key)
                         overview_text = generate_book_overview(book["full_text"], book["filename"], llm)
                         st.session_state.current_book_overview = overview_text
                     except Exception as e:
@@ -801,8 +846,9 @@ with tab_upload:
         query_to_process = selected_quick_q or chat_query
         
         if query_to_process:
-            if not GROQ_API_KEY:
-                st.error("Missing GROQ_API_KEY! Please set it in your `.env` file.")
+            active_groq_key = get_secret("GROQ_API_KEY")
+            if not active_groq_key:
+                st.error("Missing `GROQ_API_KEY`! Please configure it in the sidebar, `.env` file, or Streamlit Secrets.")
             else:
                 st.session_state.uploaded_chat_history.append({"role": "user", "content": query_to_process})
                 with st.chat_message("user", avatar="📜"):
@@ -811,7 +857,7 @@ with tab_upload:
                 with st.chat_message("assistant", avatar="🏛️"):
                     with st.spinner("Consulting manuscript excerpts and formulating answer..."):
                         try:
-                            llm = ChatGroq(model=selected_model, temperature=temperature, api_key=GROQ_API_KEY)
+                            llm = ChatGroq(model=selected_model, temperature=temperature, api_key=active_groq_key)
                             emb_model = get_embedding_model()
                             
                             # Conversational standalone question reformulation
@@ -889,8 +935,10 @@ with tab_classic:
     st.markdown("### 🏛️ The Ancient Archive of Timeless Classics")
     st.markdown("Ask deep questions across all 8 canonical masterworks pre-indexed into the Pinecone cloud archive.")
     
-    if not GROQ_API_KEY or not PINECONE_API_KEY:
-        st.warning("⚠️ Both `GROQ_API_KEY` and `PINECONE_API_KEY` are required to query the Pinecone archive. Please verify your `.env` file.")
+    classic_groq_key = get_secret("GROQ_API_KEY")
+    classic_pinecone_key = get_secret("PINECONE_API_KEY")
+    if not classic_groq_key or not classic_pinecone_key:
+        st.warning("⚠️ Both `GROQ_API_KEY` and `PINECONE_API_KEY` are required to query the Pinecone archive. Configure them in the sidebar or Streamlit Secrets.")
     
     # Classic Library Chat History
     for msg in st.session_state.classic_chat_history:
@@ -914,8 +962,10 @@ with tab_classic:
     classic_prompt = st.chat_input("Ask a question about Pride and Prejudice, Frankenstein, Little Women, Mahabharata...", key="classic_input")
     
     if classic_prompt:
-        if not GROQ_API_KEY or not PINECONE_API_KEY:
-            st.error("Missing required API keys in `.env`.")
+        classic_groq_key = get_secret("GROQ_API_KEY")
+        classic_pinecone_key = get_secret("PINECONE_API_KEY")
+        if not classic_groq_key or not classic_pinecone_key:
+            st.error("Missing required API keys (GROQ_API_KEY and PINECONE_API_KEY).")
         else:
             st.session_state.classic_chat_history.append({"role": "user", "content": classic_prompt})
             with st.chat_message("user", avatar="📜"):
@@ -924,8 +974,8 @@ with tab_classic:
             with st.chat_message("assistant", avatar="🏛️"):
                 with st.spinner("Searching the Pinecone archives and consulting the scrolls..."):
                     try:
-                        llm = ChatGroq(model=selected_model, temperature=temperature, api_key=GROQ_API_KEY)
-                        retriever = load_pinecone_retriever(k=retrieval_k)
+                        llm = ChatGroq(model=selected_model, temperature=temperature, api_key=classic_groq_key)
+                        retriever = load_pinecone_retriever(k=retrieval_k, pinecone_key=classic_pinecone_key)
                         
                         if retriever is None:
                             st.error("Could not connect to Pinecone 'enchanted-library' index. Please check your API key and network.")
