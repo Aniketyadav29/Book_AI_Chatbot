@@ -164,21 +164,27 @@ def render_profile_section():
         col1, col2 = st.columns(2)
 
         with col1:
+            # Filter saved defaults to only valid options (avoids StreamlitAPIException)
+            saved_genres = [g for g in profile.get("genres", []) if g in GENRES]
+            if not saved_genres:
+                saved_genres = ["Classic Literature"]
             genres = st.multiselect(
                 "🎭 Favourite Genres *(pick 1–5)*",
                 options=GENRES,
-                default=profile.get("genres", ["Classic Literature"]),
+                default=saved_genres,
                 help="Select genres you enjoy most."
             )
+            saved_mood = profile.get("mood", MOODS[3]) if profile.get("mood") in MOODS else MOODS[3]
             mood = st.selectbox(
                 "💭 Current Reading Mood",
                 options=MOODS,
-                index=MOODS.index(profile.get("mood", MOODS[3])) if profile.get("mood") in MOODS else 3,
+                index=MOODS.index(saved_mood),
             )
+            saved_level = profile.get("level", LEVELS[1]) if profile.get("level") in LEVELS else LEVELS[1]
             level = st.selectbox(
                 "📖 Reading Level",
                 options=LEVELS,
-                index=LEVELS.index(profile.get("level", LEVELS[1])) if profile.get("level") in LEVELS else 1,
+                index=LEVELS.index(saved_level),
             )
 
         with col2:
@@ -188,10 +194,11 @@ def render_profile_section():
                 placeholder="e.g. Rabindranath Tagore, Fyodor Dostoevsky",
                 help="We'll suggest books in a similar style."
             )
+            saved_lang = profile.get("language", "English") if profile.get("language") in LANGUAGES_PREF else "English"
             lang = st.selectbox(
                 "🌐 Preferred Language",
                 options=LANGUAGES_PREF,
-                index=LANGUAGES_PREF.index(profile.get("language", "English")) if profile.get("language") in LANGUAGES_PREF else 0,
+                index=LANGUAGES_PREF.index(saved_lang),
             )
             speed = st.slider(
                 "⚡ Reading Speed (words/min)",
