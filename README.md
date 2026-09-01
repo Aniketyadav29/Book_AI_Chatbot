@@ -8,6 +8,8 @@
 ### 🌌 *Step into an Ancient Sanctuary of Knowledge Powered by Next-Gen Neural AI*
 
 <p align="center">
+  <a href="https://bookaichatbot-x.streamlit.app/"><img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App"/></a>
+  <a href="https://bookaichatbot-x.streamlit.app/"><img src="https://img.shields.io/badge/🚀_Live_Demo-Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit App Live Demo"/></a>
   <a href="https://streamlit.io"><img src="https://img.shields.io/badge/Streamlit-1.36.0-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"/></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
   <a href="https://groq.com"><img src="https://img.shields.io/badge/Groq_LPU-Ultra_Fast_Inference-F55036?style=for-the-badge&logo=groq&logoColor=white" alt="Groq"/></a>
@@ -17,6 +19,7 @@
 </p>
 
 <p align="center">
+  <a href="https://bookaichatbot-x.streamlit.app/"><b>🌟 Open Streamlit App</b></a> •
   <a href="#-overview">Overview</a> •
   <a href="#-key-capabilities">Key Features</a> •
   <a href="#-3d-architecture-pipeline">Architecture</a> •
@@ -179,7 +182,7 @@ The Pinecone Cloud archive includes full vector indexing for:
   <img src="https://skillicons.dev/icons?i=python,pytorch,git,github,docker,vscode,markdown,html,css" />
 </p>
 
-- **Frontend & Visuals**: Streamlit (Ancient Heritage Stone & Gold Aesthetic)
+- **Frontend & Visuals**: Streamlit (Ancient Heritage Stone & Gold Aesthetic) • [Live App on Streamlit Cloud](https://bookaichatbot-x.streamlit.app/)
 - **LLM Synthesis**: Groq LPU (`openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `qwen/qwen3.8-27b`)
 - **Embeddings**: `fastembed` ONNX Runtime (`BAAI/bge-small-en-v1.5`, 384 dimensions)
 - **Vector Stores**: In-Memory Normalized Numpy Cosine Matrix & Pinecone Serverless
@@ -280,7 +283,7 @@ Retrieved 3 docs from Pinecone 'enchanted-library'
 
 <a href="mailto:anikety7905@gmail.com"><img src="https://img.shields.io/badge/Email-anikety7905%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
 <a href="https://github.com/Aniketyadav29"><img src="https://img.shields.io/badge/GitHub-Aniketyadav29-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
-<a href="https://book-ai-chatbot.onrender.com/"><img src="https://img.shields.io/badge/Live_App-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black" alt="Live App"/></a>
+<a href="https://bookaichatbot-x.streamlit.app/"><img src="https://img.shields.io/badge/Live_App-Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live App"/></a>
 
 ---
 
