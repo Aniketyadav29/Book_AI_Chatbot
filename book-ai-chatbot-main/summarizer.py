@@ -16,7 +16,7 @@ def _get_llm():
         from langchain_groq import ChatGroq
         api_key = os.environ.get("GROQ_API_KEY", "")
         if api_key:
-            return ChatGroq(model="llama3-8b-8192", temperature=0.3, api_key=api_key)
+            return ChatGroq(model="llama-3.3-70b-versatile", temperature=0.3, api_key=api_key)
     except Exception:
         pass
     return None
