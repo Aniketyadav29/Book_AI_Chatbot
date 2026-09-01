@@ -766,13 +766,9 @@ st.markdown("<p style='text-align: center; color: #d6c6a2; font-size: 1.15rem;'>
 st.write("")
 
 # ── Navigation Tabs ───────────────────────────────────────────────────────────
-tab_upload, tab_classic, tab_voice, tab_summarizer, tab_knowledge, tab_offline, tab_profile, tab_about = st.tabs([
+tab_upload, tab_classic, tab_profile, tab_about = st.tabs([
     "📖 Upload & Analyze",
     "🏛️ Classic Archive",
-    "🎙️ Voice",
-    "⚡ Summarizer",
-    "🔗 Knowledge",
-    "💻 Offline LLM",
     "👤 Profile",
     "🏰 Guide"
 ])
@@ -1147,48 +1143,9 @@ Context:
                         st.error(f"Something went wrong: {e}")
 
 
-# ==============================================================================
-# TAB 3: VOICE
-# ==============================================================================
-with tab_voice:
-    if voice:
-        voice.render()
-    else:
-        st.error("voice.py module not found.")
-
 
 # ==============================================================================
-# TAB 4: SUMMARIZER
-# ==============================================================================
-with tab_summarizer:
-    if summarizer:
-        summarizer.render_summarizer()
-    else:
-        st.error("summarizer.py module not found.")
-
-
-# ==============================================================================
-# TAB 5: EXTERNAL KNOWLEDGE
-# ==============================================================================
-with tab_knowledge:
-    if knowledge:
-        knowledge.render_external_search()
-    else:
-        st.error("knowledge.py module not found.")
-
-
-# ==============================================================================
-# TAB 6: OFFLINE LLM
-# ==============================================================================
-with tab_offline:
-    if offline:
-        offline.render()
-    else:
-        st.error("offline.py module not found.")
-
-
-# ==============================================================================
-# TAB 7: READING PROFILE
+# TAB 3: READING PROFILE
 # ==============================================================================
 with tab_profile:
     st.markdown("### 👤 Personal Reading Profile")
@@ -1207,7 +1164,7 @@ with tab_profile:
 
 
 # ==============================================================================
-# TAB 8: ARCHITECTURE & USER GUIDE
+# TAB 4: ARCHITECTURE & USER GUIDE
 # ==============================================================================
 with tab_about:
     st.markdown("### 🏰 Architecture & Comprehensive User Guide")
