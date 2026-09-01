@@ -12,6 +12,36 @@ from pypdf import PdfReader
 
 from pathlib import Path
 
+# ── Feature module imports ─────────────────────────────────────────────────────
+try:
+    import voice
+except ImportError:
+    voice = None
+try:
+    import multilingual
+except ImportError:
+    multilingual = None
+try:
+    import summarizer
+except ImportError:
+    summarizer = None
+try:
+    import knowledge
+except ImportError:
+    knowledge = None
+try:
+    import offline
+except ImportError:
+    offline = None
+try:
+    import profile
+except ImportError:
+    profile = None
+try:
+    import analytics
+except ImportError:
+    analytics = None
+
 # Load .env file explicitly if present
 try:
     from dotenv import load_dotenv
@@ -736,10 +766,15 @@ st.markdown("<p style='text-align: center; color: #d6c6a2; font-size: 1.15rem;'>
 st.write("")
 
 # ── Navigation Tabs ───────────────────────────────────────────────────────────
-tab_upload, tab_classic, tab_about = st.tabs([
-    "📖 Upload & Analyze Tome",
-    "🏛️ The Classic Heritage Archive",
-    "🏰 Architecture & User Guide"
+tab_upload, tab_classic, tab_voice, tab_summarizer, tab_knowledge, tab_offline, tab_profile, tab_about = st.tabs([
+    "📖 Upload & Analyze",
+    "🏛️ Classic Archive",
+    "🎙️ Voice",
+    "⚡ Summarizer",
+    "🔗 Knowledge",
+    "💻 Offline LLM",
+    "👤 Profile",
+    "🏰 Guide"
 ])
 
 
@@ -1113,7 +1148,66 @@ Context:
 
 
 # ==============================================================================
-# TAB 3: ARCHITECTURE & USER GUIDE
+# TAB 3: VOICE
+# ==============================================================================
+with tab_voice:
+    if voice:
+        voice.render()
+    else:
+        st.error("voice.py module not found.")
+
+
+# ==============================================================================
+# TAB 4: SUMMARIZER
+# ==============================================================================
+with tab_summarizer:
+    if summarizer:
+        summarizer.render_summarizer()
+    else:
+        st.error("summarizer.py module not found.")
+
+
+# ==============================================================================
+# TAB 5: EXTERNAL KNOWLEDGE
+# ==============================================================================
+with tab_knowledge:
+    if knowledge:
+        knowledge.render_external_search()
+    else:
+        st.error("knowledge.py module not found.")
+
+
+# ==============================================================================
+# TAB 6: OFFLINE LLM
+# ==============================================================================
+with tab_offline:
+    if offline:
+        offline.render()
+    else:
+        st.error("offline.py module not found.")
+
+
+# ==============================================================================
+# TAB 7: READING PROFILE
+# ==============================================================================
+with tab_profile:
+    st.markdown("### 👤 Personal Reading Profile")
+    st.caption("Save your reading preferences — genres, speed, and history — so the AI tailors responses to you.")
+    if profile:
+        profile.render_profile_section()
+    else:
+        st.error("profile.py module not found.")
+
+    # Language preferences
+    st.markdown("---")
+    if multilingual:
+        multilingual.render_language_selector()
+    else:
+        st.warning("multilingual.py not available.")
+
+
+# ==============================================================================
+# TAB 8: ARCHITECTURE & USER GUIDE
 # ==============================================================================
 with tab_about:
     st.markdown("### 🏰 Architecture & Comprehensive User Guide")
