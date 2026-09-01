@@ -340,6 +340,7 @@ def get_secret(key_name: str):
 AVAILABLE_GROQ_MODELS = [
     "openai/gpt-oss-120b",
     "openai/gpt-oss-20b",
+    "llama-3.3-70b-versatile",
     "qwen/qwen3.8-27b",
     "qwen/qwen3.6-27b",
     "groq/compound",
@@ -644,7 +645,10 @@ with st.sidebar:
         index=AVAILABLE_GROQ_MODELS.index(default_model) if default_model in AVAILABLE_GROQ_MODELS else 0,
         help="Choose the Groq LLM model for analysis and conversational answers."
     )
-    
+    # Store in session state so feature modules (profile, summarizer) can access it
+    st.session_state["selected_model"] = selected_model
+
+
     temperature = st.slider(
         "✨ Creativity (Temperature)",
         min_value=0.0,

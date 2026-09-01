@@ -58,14 +58,35 @@ def save_profile(user_id: str, data: dict) -> None:
 # ── LLM recommendation engine ─────────────────────────────────────────────────
 
 def _get_llm():
-    """Lazy-load Groq LLM."""
-    if st.session_state.get("llm"):
-        return st.session_state.llm
+    """Build a Groq LLM using the model selected in the sidebar session state.
+    Falls back to llama-3.3-70b-versatile if no model is stored yet.
+    """
     try:
         from langchain_groq import ChatGroq
+        # Re-use the API key from env or Streamlit secrets
         key = os.environ.get("GROQ_API_KEY", "")
-        if key:
-            return ChatGroq(model="llama-3.3-70b-versatile", temperature=0.6, api_key=key)
+        if not key:
+            try:
+                import streamlit as _st
+                key = _st.secrets.get("GROQ_API_KEY", "")
+            except Exception:
+                pass
+        if not key:
+            return None
+
+        # Use the model the user selected in the sidebar
+        model = st.session_state.get("selected_model", "llama-3.3-70b-versatile")
+        # Fallback: some custom model IDs on this Groq account may not support chat;
+        # always use llama-3.3-70b-versatile for profile recommendations
+        safe_models = [
+            "llama-3.3-70b-versatile",
+            "llama3-70b-8192",
+            "mixtral-8x7b-32768",
+        ]
+        if model not in safe_models:
+            model = "llama-3.3-70b-versatile"
+
+        return ChatGroq(model=model, temperature=0.6, api_key=key)
     except Exception:
         pass
     return None
