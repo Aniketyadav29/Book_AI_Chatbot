@@ -291,6 +291,14 @@ Retrieved 3 docs from Pinecone 'enchanted-library'
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,10,25&height=120&section=footer" width="100%"/>
 </p>
 
+## 🚀 New Features Added
+
+- **Navigation Sidebar**: Easy access to Upload, Classic Archive, Analytics, Author Mode, Settings.
+- **Offline Mode**: Local LLM support via HuggingFace Transformers.
+- **Author Mode**: In-app manuscript editing and annotation.
+- **Analytics Dashboard**: Interaction logging with rating and charts.
+- **API Key Manager**: Secure UI for Groq and Pinecone keys.
+
 ⭐ **Star this repository if you find it helpful!**
 
 </div>
