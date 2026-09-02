@@ -29,13 +29,32 @@ SUPPORTED_TYPES = ["pdf", "epub", "docx", "doc", "txt", "md"]
 
 
 def _get_admin_password() -> str:
-    pwd = os.environ.get("ADMIN_PASSWORD", "").strip()
-    if not pwd:
+    """Read admin password — always reads .env directly so no restart is needed."""
+    # 1. Read directly from .env file (live, no restart needed)
+    env_file = Path(__file__).parent / ".env"
+    if env_file.exists():
         try:
-            pwd = st.secrets.get("ADMIN_PASSWORD", "").strip()
+            for line in env_file.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if line.startswith("ADMIN_PASSWORD="):
+                    pwd = line.split("=", 1)[1].strip()
+                    if pwd:
+                        return pwd
         except Exception:
             pass
-    return pwd or "admin123"
+    # 2. Fallback: os.environ (set at startup by load_dotenv in app.py)
+    pwd = os.environ.get("ADMIN_PASSWORD", "").strip()
+    if pwd:
+        return pwd
+    # 3. Fallback: Streamlit secrets
+    try:
+        pwd = st.secrets.get("ADMIN_PASSWORD", "").strip()
+        if pwd:
+            return pwd
+    except Exception:
+        pass
+    # 4. Hardcoded default (change via .env to override)
+    return "admin123"
 
 
 def save_submission(file_bytes, filename, author_name, domain, description):
