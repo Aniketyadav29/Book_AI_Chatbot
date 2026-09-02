@@ -340,7 +340,6 @@ def get_secret(key_name: str):
 AVAILABLE_GROQ_MODELS = [
     "openai/gpt-oss-120b",
     "openai/gpt-oss-20b",
-    "llama-3.3-70b-versatile",
     "qwen/qwen3.8-27b",
     "qwen/qwen3.6-27b",
     "groq/compound",

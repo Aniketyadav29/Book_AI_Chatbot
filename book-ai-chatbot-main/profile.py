@@ -57,44 +57,51 @@ def save_profile(user_id: str, data: dict) -> None:
 
 # ── LLM recommendation engine ─────────────────────────────────────────────────
 
-def _get_llm():
-    """Build a Groq LLM using the model selected in the sidebar session state.
-    Falls back to llama-3.3-70b-versatile if no model is stored yet.
-    """
-    try:
-        from langchain_groq import ChatGroq
-        # Re-use the API key from env or Streamlit secrets
-        key = os.environ.get("GROQ_API_KEY", "")
-        if not key:
-            try:
-                import streamlit as _st
-                key = _st.secrets.get("GROQ_API_KEY", "")
-            except Exception:
-                pass
-        if not key:
-            return None
+ACTIVE_GROQ_MODELS = [
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "qwen/qwen3.8-27b",
+    "qwen/qwen3.6-27b",
+    "groq/compound-mini",
+    "groq/compound",
+]
 
-        # Use the model the user selected in the sidebar
-        model = st.session_state.get("selected_model", "llama-3.3-70b-versatile")
-        # Fallback: some custom model IDs on this Groq account may not support chat;
-        # always use llama-3.3-70b-versatile for profile recommendations
-        safe_models = [
-            "llama-3.3-70b-versatile",
-            "llama3-70b-8192",
-            "mixtral-8x7b-32768",
-        ]
-        if model not in safe_models:
-            model = "llama-3.3-70b-versatile"
 
-        return ChatGroq(model=model, temperature=0.6, api_key=key)
-    except Exception:
-        pass
-    return None
+def _get_api_key() -> str:
+    """Retrieve Groq API key from environment, session state, or Streamlit secrets."""
+    key = os.environ.get("GROQ_API_KEY", "").strip()
+    if not key:
+        try:
+            key = st.session_state.get("api_keys", {}).get("GROQ_API_KEY", "").strip()
+        except Exception:
+            pass
+    if not key:
+        try:
+            import streamlit as _st
+            key = _st.secrets.get("GROQ_API_KEY", "").strip()
+        except Exception:
+            pass
+    return key
+
+
+def _get_candidate_models() -> list:
+    """Return an ordered list of active Groq models to try, prioritizing user selection."""
+    user_sel = st.session_state.get("selected_model", "")
+    candidates = []
+    if user_sel and user_sel in ACTIVE_GROQ_MODELS:
+        candidates.append(user_sel)
+    for m in ACTIVE_GROQ_MODELS:
+        if m not in candidates:
+            candidates.append(m)
+    return candidates
 
 
 def _recommend_books(profile: dict) -> str:
-    """Call LLM to get personalised book recommendations with links."""
-    llm = _get_llm()
+    """Call LLM to get personalised book recommendations with links using robust model fallback."""
+    key = _get_api_key()
+    if not key:
+        return "⚠️ GROQ_API_KEY not set. Please add your Groq API key in the sidebar or .env to get AI recommendations."
+
     genres = ", ".join(profile.get("genres", ["Classic Literature"]))
     mood = profile.get("mood", "Deep & Thought-Provoking")
     level = profile.get("level", "Intermediate")
@@ -123,14 +130,23 @@ For EACH book, provide:
 
 Format as clean markdown. Use the exact link formats above with the real book title URL-encoded."""
 
-    if llm:
+    from langchain_groq import ChatGroq
+    from langchain_core.messages import HumanMessage
+
+    models_to_try = _get_candidate_models()
+    last_err = None
+
+    for model_name in models_to_try:
         try:
-            from langchain_core.messages import HumanMessage
+            llm = ChatGroq(model=model_name, temperature=0.6, api_key=key)
             result = llm.invoke([HumanMessage(content=prompt)])
-            return result.content
+            if result and result.content:
+                return result.content
         except Exception as e:
-            return f"⚠️ LLM error: {e}"
-    return "⚠️ GROQ_API_KEY not set. Please add it in the sidebar to get AI recommendations."
+            last_err = e
+            continue
+
+    return f"⚠️ LLM error: {last_err}"
 
 
 # ── Open Library cover fetch ──────────────────────────────────────────────────

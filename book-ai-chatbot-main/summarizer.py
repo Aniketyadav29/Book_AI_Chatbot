@@ -8,15 +8,43 @@ import re
 import os
 
 
+# Ordered list of active Groq models to try (llama-3.3-70b-versatile is decommissioned)
+_FALLBACK_MODELS = [
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "qwen/qwen3.8-27b",
+    "groq/compound-mini",
+    "groq/compound",
+]
+
+
 def _get_llm():
-    """Lazy-load the Groq LLM from session state or env."""
+    """Lazy-load the Groq LLM from session state or env, with model fallback."""
     if "llm" in st.session_state and st.session_state.llm is not None:
         return st.session_state.llm
     try:
         from langchain_groq import ChatGroq
-        api_key = os.environ.get("GROQ_API_KEY", "")
-        if api_key:
-            return ChatGroq(model="llama-3.3-70b-versatile", temperature=0.3, api_key=api_key)
+        api_key = os.environ.get("GROQ_API_KEY", "").strip()
+        if not api_key:
+            try:
+                api_key = st.session_state.get("api_keys", {}).get("GROQ_API_KEY", "").strip()
+            except Exception:
+                pass
+        if not api_key:
+            return None
+        # Prefer the user-selected model if it's valid, then fall back through the list
+        user_model = st.session_state.get("selected_model", "")
+        candidates = []
+        if user_model and user_model in _FALLBACK_MODELS:
+            candidates.append(user_model)
+        for m in _FALLBACK_MODELS:
+            if m not in candidates:
+                candidates.append(m)
+        for model_name in candidates:
+            try:
+                return ChatGroq(model=model_name, temperature=0.3, api_key=api_key)
+            except Exception:
+                continue
     except Exception:
         pass
     return None
