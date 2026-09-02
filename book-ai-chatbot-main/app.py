@@ -41,6 +41,10 @@ try:
     import analytics
 except ImportError:
     analytics = None
+try:
+    import community_books
+except ImportError:
+    community_books = None
 
 # Load .env file explicitly if present
 try:
@@ -629,6 +633,9 @@ if "current_book_overview" not in st.session_state:
 if "response_language" not in st.session_state:
     st.session_state.response_language = "English"
 
+if "admin_authenticated" not in st.session_state:
+    st.session_state.admin_authenticated = False
+
 
 # ── Sidebar Controls & Configuration ──────────────────────────────────────────
 with st.sidebar:
@@ -769,10 +776,12 @@ st.markdown("<p style='text-align: center; color: #d6c6a2; font-size: 1.15rem;'>
 st.write("")
 
 # ── Navigation Tabs ───────────────────────────────────────────────────────────
-tab_upload, tab_classic, tab_profile, tab_about = st.tabs([
+tab_upload, tab_classic, tab_profile, tab_community, tab_admin, tab_about = st.tabs([
     "📖 Upload & Analyze",
     "🏛️ Classic Archive",
     "👤 Profile",
+    "📚 Community Library",
+    "🔐 Admin Panel",
     "🏰 Guide"
 ])
 
@@ -1167,7 +1176,33 @@ with tab_profile:
 
 
 # ==============================================================================
-# TAB 4: ARCHITECTURE & USER GUIDE
+# TAB 4: COMMUNITY LIBRARY & BOOK UPLOAD
+# ==============================================================================
+with tab_community:
+    st.markdown("### 📚 Community Book Library")
+    st.caption("Upload your own books for the community, and explore books shared by other members.")
+    if community_books:
+        community_books.render_community_upload()
+        st.markdown("---")
+        community_books.render_community_library()
+    else:
+        st.error("community_books.py module not found. Please ensure it exists in the project directory.")
+
+
+# ==============================================================================
+# TAB 5: ADMIN PANEL
+# ==============================================================================
+with tab_admin:
+    st.markdown("### 🔐 Admin Panel")
+    st.caption("Review and approve community book submissions. Approved books appear in the Community Library.")
+    if community_books:
+        community_books.render_admin_panel()
+    else:
+        st.error("community_books.py module not found.")
+
+
+# ==============================================================================
+# TAB 6: ARCHITECTURE & USER GUIDE
 # ==============================================================================
 with tab_about:
     st.markdown("### 🏰 Architecture & Comprehensive User Guide")
