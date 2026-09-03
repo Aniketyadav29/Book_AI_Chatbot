@@ -8,7 +8,7 @@
 ### 🌌 *Step into an Ancient Sanctuary of Knowledge Powered by Next-Gen Neural AI*
 
 <p align="center">
-  <a href="https://bookaichatbot-x.streamlit.app/"><img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App"/></a>
+  <a href="https://bookaichatbot-e.streamlit.app/"><img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App"/></a>
   <a href="https://bookaichatbot-x.streamlit.app/"><img src="https://img.shields.io/badge/🚀_Live_Demo-Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit App Live Demo"/></a>
   <a href="https://streamlit.io"><img src="https://img.shields.io/badge/Streamlit-1.36%2B-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"/></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
