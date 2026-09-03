@@ -29,12 +29,13 @@ SUPPORTED_TYPES = ["pdf", "epub", "docx", "doc", "txt", "md"]
 
 
 def _get_admin_password() -> str:
-    """Read admin password — always reads .env directly so no restart is needed."""
-    # 1. Read directly from .env file (live, no restart needed)
-    env_file = Path(__file__).parent / ".env"
+    """Read admin password - always reads .env directly so no restart needed."""
+    # Use abspath to resolve __file__ correctly regardless of Streamlit cwd
+    env_file = Path(os.path.abspath(__file__)).parent / ".env"
     if env_file.exists():
         try:
-            for line in env_file.read_text(encoding="utf-8").splitlines():
+            content = env_file.read_text(encoding="utf-8-sig")  # utf-8-sig handles BOM
+            for line in content.splitlines():
                 line = line.strip()
                 if line.startswith("ADMIN_PASSWORD="):
                     pwd = line.split("=", 1)[1].strip()
@@ -42,18 +43,17 @@ def _get_admin_password() -> str:
                         return pwd
         except Exception:
             pass
-    # 2. Fallback: os.environ (set at startup by load_dotenv in app.py)
+    # Fallback: os.environ
     pwd = os.environ.get("ADMIN_PASSWORD", "").strip()
     if pwd:
         return pwd
-    # 3. Fallback: Streamlit secrets
+    # Fallback: Streamlit secrets
     try:
         pwd = st.secrets.get("ADMIN_PASSWORD", "").strip()
         if pwd:
             return pwd
     except Exception:
         pass
-    # 4. Hardcoded default (change via .env to override)
     return "admin123"
 
 
@@ -259,7 +259,10 @@ def render_admin_panel():
                 else:
                     st.error("❌ Incorrect password.")
         with col_hint:
-            st.caption("💡 Set `ADMIN_PASSWORD=yourpassword` in `.env` to change the password.")
+            env_path = Path(os.path.abspath(__file__)).parent / ".env"
+            st.caption(f"💡 Set `ADMIN_PASSWORD=yourpassword` in `.env` to change the password.")
+            with st.expander("🔍 Debug info", expanded=False):
+                st.code(f".env path : {env_path}\n.env found: {env_path.exists()}\nActive pwd : {_get_admin_password()}", language="text")
         return
 
     col_title, col_logout = st.columns([4,1])
