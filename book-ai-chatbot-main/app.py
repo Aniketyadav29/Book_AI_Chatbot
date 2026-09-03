@@ -806,34 +806,43 @@ with tab_upload:
             st.session_state.current_book_data.get("file_key") != file_key):
             
             with st.status("🔮 Reading and indexing your manuscript...", expanded=True) as status:
-                st.write("📜 Extracting text across chapters and pages...")
-                full_text, pages = extract_text_from_file(uploaded_file)
-                
-                if not full_text:
-                    st.error("Could not extract any readable text from this file.")
-                else:
-                    word_count = len(full_text.split())
-                    reading_time_mins = max(1, word_count // 200)
+                try:
+                    st.write("📜 Extracting text across chapters and pages...")
+                    full_text, pages = extract_text_from_file(uploaded_file)
                     
-                    st.write(f"⚡ Creating fast semantic vector embeddings ({len(pages)} sections)...")
-                    emb_model = get_embedding_model()
-                    index_data = build_in_memory_index(pages, emb_model)
-                    
-                    st.session_state.current_book_data = {
-                        "file_key": file_key,
-                        "filename": uploaded_file.name,
-                        "full_text": full_text,
-                        "pages": pages,
-                        "word_count": word_count,
-                        "reading_time_mins": reading_time_mins,
-                        "total_pages": len(pages),
-                        "index": index_data
-                    }
-                    st.session_state.uploaded_chat_history = []
-                    st.session_state.current_book_overview = None
-                    
-                    status.update(label="✅ Manuscript inscribed and indexed successfully!", state="complete", expanded=False)
-                    st.rerun()
+                    if not full_text:
+                        st.error("Could not extract any readable text from this file.")
+                    else:
+                        word_count = len(full_text.split())
+                        reading_time_mins = max(1, word_count // 200)
+                        
+                        st.write(f"⚡ Creating fast semantic vector embeddings ({len(pages)} sections)...")
+                        emb_model = get_embedding_model()
+                        index_data = build_in_memory_index(pages, emb_model)
+                        
+                        # Limit stored text to avoid memory issues on Streamlit Cloud
+                        stored_text = full_text if len(full_text) <= 100000 else full_text[:50000] + "\n\n[...content trimmed for memory...]\n\n" + full_text[-50000:]
+                        
+                        st.session_state.current_book_data = {
+                            "file_key": file_key,
+                            "filename": uploaded_file.name,
+                            "full_text": stored_text,
+                            "pages": pages,
+                            "word_count": word_count,
+                            "reading_time_mins": reading_time_mins,
+                            "total_pages": len(pages),
+                            "index": index_data
+                        }
+                        st.session_state.uploaded_chat_history = []
+                        st.session_state.current_book_overview = None
+                        
+                        status.update(label="✅ Manuscript inscribed and indexed successfully!", state="complete", expanded=False)
+                        st.rerun()
+                except Exception as e:
+                    status.update(label="❌ Error processing manuscript", state="error", expanded=True)
+                    st.error(f"Error processing file: {e}")
+                    import traceback
+                    st.code(traceback.format_exc(), language="text")
 
     # Display Active Book Dashboard & Overview
     if st.session_state.current_book_data:
