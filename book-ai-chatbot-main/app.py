@@ -1147,7 +1147,7 @@ Context:
                             
                             st.session_state.classic_chat_history.append({
                                 "role": "assistant",
-                                "content": response,
+                                "content": response_content,
                                 "snippets": snippet_texts
                             })
                             
