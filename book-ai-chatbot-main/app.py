@@ -476,7 +476,9 @@ def build_in_memory_index(pages: List[Dict[str, Any]], embedding_model: FastEmbe
     """
     Chunks uploaded text, computes embeddings via FastEmbed, and builds a
     fast numpy cosine-similarity searchable index.
+    Uses batch processing to reduce peak memory on Streamlit Cloud.
     """
+    import gc
     splitter = RecursiveCharacterTextSplitter(chunk_size=900, chunk_overlap=150)
     all_chunks = []
     
@@ -493,14 +495,27 @@ def build_in_memory_index(pages: List[Dict[str, Any]], embedding_model: FastEmbe
     if not all_chunks:
         return {"chunks": [], "embeddings_matrix": None}
     
+    # Process embeddings in small batches to avoid OOM on Streamlit Cloud
     chunk_texts = [c["text"] for c in all_chunks]
-    embeddings_list = embedding_model.embed_documents(chunk_texts)
-    embeddings_matrix = np.array(embeddings_list, dtype=np.float32)
+    batch_size = 64
+    all_embeddings = []
+    
+    for i in range(0, len(chunk_texts), batch_size):
+        batch = chunk_texts[i:i + batch_size]
+        batch_embeddings = embedding_model.embed_documents(batch)
+        all_embeddings.extend(batch_embeddings)
+        gc.collect()  # Free intermediate memory
+    
+    embeddings_matrix = np.array(all_embeddings, dtype=np.float32)
+    del all_embeddings  # Free the list copy
+    gc.collect()
     
     # Normalize for fast cosine similarity dot product
     norms = np.linalg.norm(embeddings_matrix, axis=1, keepdims=True)
     norms[norms == 0] = 1.0
     normalized_matrix = embeddings_matrix / norms
+    del embeddings_matrix  # Free un-normalized copy
+    gc.collect()
     
     return {
         "chunks": all_chunks,
