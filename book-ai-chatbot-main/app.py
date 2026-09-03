@@ -73,251 +73,457 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── Ancient Cultural Heritage Homes & Architectural Aesthetics CSS ─────────────
+# ── Ancient Cultural Heritage Homes & 3D Architectural Aesthetics CSS ─────────────
 ancient_theme_css = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-/* Main App Background: Ancient Cultural Courtyard & Stone Heritage Home */
+/* Main App Background: Deep Ancient Stone Sanctuary with Ambient Glow */
 .stApp {
     background: 
-        linear-gradient(180deg, rgba(16, 12, 8, 0.88) 0%, rgba(12, 9, 6, 0.92) 50%, rgba(7, 5, 3, 0.97) 100%),
+        radial-gradient(ellipse at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 10% 40%, rgba(139, 90, 43, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 45%),
+        linear-gradient(180deg, rgba(14, 10, 7, 0.92) 0%, rgba(10, 7, 5, 0.95) 50%, rgba(6, 4, 3, 0.98) 100%),
         url("https://images.unsplash.com/photo-1599827056326-802c67d16ee6?auto=format&fit=crop&w=2560&q=85") !important;
     background-size: cover !important;
     background-position: center center !important;
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
-    color: #f3ecd8 !important;
+    color: #f5eedb !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-/* Headings with Ancient Cultural Heritage Typography */
+/* Headings with 3D Embossed Heritage Typography */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Cinzel', serif !important;
-    color: #e5c98b !important;
-    letter-spacing: 0.6px;
+    color: #f7e2a9 !important;
+    letter-spacing: 0.8px;
 }
 
 h1 {
     font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
-    color: #f5dfa3 !important;
-    text-shadow: 0 0 25px rgba(229, 201, 139, 0.4), 2px 2px 8px rgba(0, 0, 0, 0.9);
+    color: #fbecc4 !important;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(212, 175, 55, 0.5), 0 1px 2px #fff !important;
     text-align: center;
-    font-weight: 700;
+    font-weight: 800;
 }
 
-/* Sidebar with Antique Rosewood & Brass Motif */
+/* 3D Animated Hero Showcase Banner */
+.hero-3d-wrapper {
+    perspective: 1200px;
+    margin: 10px auto 30px auto;
+    text-align: center;
+}
+
+.hero-3d-card {
+    background: linear-gradient(145deg, rgba(38, 25, 16, 0.88) 0%, rgba(20, 13, 8, 0.95) 60%, rgba(12, 8, 5, 0.98) 100%);
+    border: 1px solid rgba(229, 201, 139, 0.45);
+    border-radius: 24px;
+    padding: 38px 28px 30px 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.85),
+        0 0 30px rgba(212, 175, 55, 0.2),
+        inset 0 1px 2px rgba(255, 235, 175, 0.4),
+        inset 0 -1px 20px rgba(0, 0, 0, 0.8);
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+}
+
+.hero-3d-card:hover {
+    transform: translateY(-6px) rotateX(2deg);
+    box-shadow: 
+        0 30px 70px rgba(0, 0, 0, 0.9),
+        0 0 45px rgba(212, 175, 55, 0.35),
+        inset 0 1px 3px rgba(255, 245, 200, 0.6);
+}
+
+.hero-3d-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    animation: rotateGlow 18s linear infinite;
+}
+
+@keyframes rotateGlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.floating-book-icon {
+    font-size: 3.4rem;
+    display: inline-block;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 25px rgba(212, 175, 55, 0.6));
+    animation: float3d 4s ease-in-out infinite alternate;
+    transform-origin: center;
+}
+
+@keyframes float3d {
+    0% { transform: translateY(0px) rotateY(-8deg) rotateZ(-2deg); }
+    50% { transform: translateY(-10px) rotateY(0deg) rotateZ(1deg); }
+    100% { transform: translateY(-16px) rotateY(8deg) rotateZ(3deg); }
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(139, 90, 43, 0.35) 100%);
+    border: 1px solid rgba(229, 201, 139, 0.55);
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fcedc5;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 240, 190, 0.4);
+    margin-bottom: 14px;
+}
+
+.hero-title {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+    font-size: 2.35rem;
+    font-weight: 900;
+    margin: 8px 0 12px 0;
+    color: #fff2cc;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(229, 201, 139, 0.5);
+}
+
+.hero-subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #ded1b4;
+    font-size: 1.08rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+/* Sidebar with 3D Antique Rosewood & Brass Motif */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, rgba(20, 14, 10, 0.96) 0%, rgba(14, 10, 7, 0.98) 100%) !important;
-    border-right: 1px solid rgba(212, 175, 55, 0.3) !important;
-    backdrop-filter: blur(12px);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.7);
+    background: linear-gradient(180deg, rgba(20, 14, 9, 0.97) 0%, rgba(13, 9, 6, 0.99) 100%) !important;
+    border-right: 1px solid rgba(212, 175, 55, 0.35) !important;
+    backdrop-filter: blur(16px);
+    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.85);
 }
 
 [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-    color: #e5c98b !important;
+    color: #f7e2a9 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-/* Ancient Navigation Tabs */
+/* 3D Navigation Tabs */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 10px;
-    background: rgba(24, 17, 11, 0.85);
-    padding: 8px 12px;
-    border-radius: 14px;
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    margin-bottom: 24px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    gap: 12px;
+    background: linear-gradient(145deg, rgba(28, 18, 11, 0.92) 0%, rgba(18, 12, 7, 0.96) 100%);
+    padding: 10px 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    margin-bottom: 28px;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.65),
+        inset 0 1px 1px rgba(255, 235, 175, 0.25);
 }
 
 .stTabs [data-baseweb="tab"] {
-    border-radius: 10px !important;
-    color: #c4b595 !important;
+    border-radius: 12px !important;
+    color: #c9b998 !important;
     font-family: 'Cinzel', serif !important;
-    font-weight: 600 !important;
-    font-size: 1.05rem !important;
-    padding: 10px 22px !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    padding: 10px 24px !important;
     background: transparent !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    border: 1px solid transparent !important;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    color: #fff2d1 !important;
+    background: rgba(212, 175, 55, 0.12) !important;
+    transform: translateY(-2px);
 }
 
 .stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(139, 90, 43, 0.35) 100%) !important;
-    color: #fff2d1 !important;
-    border: 1px solid rgba(229, 201, 139, 0.6) !important;
-    box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
-    text-shadow: 0 0 10px rgba(229, 201, 139, 0.5);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.32) 0%, rgba(139, 90, 43, 0.45) 100%) !important;
+    color: #fff9e6 !important;
+    border: 1px solid rgba(245, 223, 163, 0.75) !important;
+    box-shadow: 
+        0 6px 20px rgba(212, 175, 55, 0.35),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+    text-shadow: 0 0 14px rgba(245, 223, 163, 0.7) !important;
+    transform: translateY(-2px) !important;
 }
 
-/* Ancient Heritage Glassmorphic Cards */
+/* 3D Glassmorphic Cards with Depth & Hover Lift */
 .heritage-card {
-    background: linear-gradient(145deg, rgba(32, 22, 15, 0.85) 0%, rgba(20, 14, 9, 0.92) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    border-radius: 14px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.05);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(145deg, rgba(34, 23, 15, 0.88) 0%, rgba(20, 13, 8, 0.95) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 18px;
+    padding: 26px;
+    margin-bottom: 22px;
+    box-shadow: 
+        0 14px 35px rgba(0, 0, 0, 0.7),
+        inset 0 1px 2px rgba(255, 235, 175, 0.25),
+        inset 0 0 20px rgba(212, 175, 55, 0.05);
+    backdrop-filter: blur(14px);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transform-style: preserve-3d;
+}
+
+.heritage-card:hover {
+    transform: translateY(-5px) scale(1.005);
+    border-color: rgba(245, 223, 163, 0.65);
+    box-shadow: 
+        0 22px 50px rgba(0, 0, 0, 0.85),
+        0 0 25px rgba(212, 175, 55, 0.25),
+        inset 0 1px 2px rgba(255, 245, 200, 0.4);
 }
 
 .heritage-card h4 {
     margin-top: 0;
-    color: #f5dfa3;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-    padding-bottom: 10px;
+    color: #f7e2a9;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    padding-bottom: 12px;
 }
 
-/* Metric / Stat Boxes with Filigree Truncation Fix */
+/* 3D Metric Stat Cubes */
 .stat-box {
     text-align: center;
-    padding: 16px 12px;
-    background: linear-gradient(145deg, rgba(38, 26, 17, 0.8) 0%, rgba(22, 15, 10, 0.9) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 12px;
-    margin-bottom: 12px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    padding: 18px 14px;
+    background: linear-gradient(145deg, rgba(42, 28, 18, 0.85) 0%, rgba(22, 14, 9, 0.95) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 16px;
+    margin-bottom: 14px;
+    box-shadow: 
+        0 8px 22px rgba(0, 0, 0, 0.6),
+        inset 0 1px 2px rgba(255, 235, 175, 0.3);
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.stat-box:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(245, 223, 163, 0.8);
+    box-shadow: 
+        0 14px 30px rgba(0, 0, 0, 0.75),
+        0 0 20px rgba(212, 175, 55, 0.3),
+        inset 0 1px 2px rgba(255, 245, 200, 0.5);
 }
 
 .stat-number {
     font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #f5dfa3;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #fcedc5;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
     max-width: 100%;
     padding: 0 4px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 .stat-label {
-    font-size: 0.82rem;
-    color: #bda882;
+    font-size: 0.84rem;
+    color: #c9b793;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-top: 4px;
+    letter-spacing: 0.9px;
+    font-weight: 600;
+    margin-top: 6px;
 }
 
-/* Chat Messages with Ancient Scroll & Parchment Feel */
+/* 3D Chat Messages with Scroll Depth */
 [data-testid="stChatMessage"] {
-    background: linear-gradient(145deg, rgba(28, 19, 13, 0.92) 0%, rgba(18, 12, 8, 0.96) 100%) !important;
-    border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    border-radius: 14px !important;
-    padding: 18px 22px !important;
-    margin-bottom: 14px !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(145deg, rgba(30, 20, 13, 0.94) 0%, rgba(18, 12, 8, 0.98) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    border-radius: 18px !important;
+    padding: 20px 24px !important;
+    margin-bottom: 16px !important;
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 235, 175, 0.2) !important;
     font-size: 1.05rem !important;
-    line-height: 1.65 !important;
+    line-height: 1.7 !important;
+    transition: transform 0.3s ease, border-color 0.3s ease !important;
+}
+
+[data-testid="stChatMessage"]:hover {
+    transform: translateY(-2px);
+    border-color: rgba(229, 201, 139, 0.55) !important;
 }
 
 [data-testid="stChatMessage"] p, [data-testid="stChatMessage"] li {
-    color: #f1ebd8 !important;
+    color: #f7f1e1 !important;
 }
 
-/* Chat Input Bar */
+/* 3D Chat Input Bar */
 [data-testid="stChatInput"] {
-    border-radius: 14px !important;
-    border: 1px solid rgba(212, 175, 55, 0.5) !important;
-    background-color: rgba(22, 15, 10, 0.97) !important;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6) !important;
+    border-radius: 18px !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
+    background: linear-gradient(145deg, rgba(26, 17, 11, 0.98) 0%, rgba(16, 10, 6, 0.99) 100%) !important;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.75),
+        0 0 15px rgba(212, 175, 55, 0.15),
+        inset 0 1px 2px rgba(255, 235, 175, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-testid="stChatInput"]:focus-within {
+    border-color: #ffd978 !important;
+    box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.85),
+        0 0 25px rgba(212, 175, 55, 0.35),
+        inset 0 1px 2px rgba(255, 245, 200, 0.4) !important;
 }
 
 [data-testid="stChatInput"] textarea {
-    color: #f3ecd8 !important;
+    color: #f7f1e1 !important;
 }
 
-/* Ancient Golden Heritage Buttons */
+/* 3D Tactile Golden Heritage Buttons */
 .stButton > button {
-    background: linear-gradient(135deg, rgba(82, 54, 28, 0.9) 0%, rgba(45, 29, 15, 0.9) 100%) !important;
-    color: #f5dfa3 !important;
-    border: 1px solid rgba(212, 175, 55, 0.5) !important;
-    border-radius: 10px !important;
+    background: linear-gradient(135deg, #8a5a2b 0%, #5a3818 100%) !important;
+    color: #fff2d1 !important;
+    border: 1px solid rgba(245, 223, 163, 0.65) !important;
+    border-radius: 12px !important;
     font-family: 'Cinzel', serif !important;
-    font-weight: 600 !important;
-    font-size: 0.95rem !important;
-    padding: 9px 20px !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    font-weight: 700 !important;
+    font-size: 0.98rem !important;
+    padding: 10px 24px !important;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    box-shadow: 
+        0 6px 18px rgba(0, 0, 0, 0.55),
+        inset 0 1px 2px rgba(255, 245, 200, 0.5) !important;
+    transform: translateY(0);
 }
 
 .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(120, 80, 40, 0.95) 0%, rgba(70, 45, 22, 0.95) 100%) !important;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
-    border-color: #ffd978 !important;
+    background: linear-gradient(135deg, #ad7337 0%, #754a20 100%) !important;
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.7),
+        0 0 22px rgba(212, 175, 55, 0.5),
+        inset 0 1px 3px rgba(255, 255, 255, 0.7) !important;
+    border-color: #ffe699 !important;
     color: #ffffff !important;
-    transform: translateY(-1px);
+    transform: translateY(-3px) scale(1.02);
 }
 
-/* File Uploader Container - Dark Antique Fix */
+.stButton > button:active {
+    transform: translateY(1px) scale(0.99) !important;
+    box-shadow: 
+        0 3px 10px rgba(0, 0, 0, 0.7),
+        inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 3D File Uploader Container */
 [data-testid="stFileUploader"] {
-    background: rgba(28, 19, 13, 0.7) !important;
-    border: 2px dashed rgba(212, 175, 55, 0.45) !important;
-    border-radius: 16px !important;
-    padding: 20px !important;
+    background: linear-gradient(145deg, rgba(32, 21, 13, 0.85) 0%, rgba(18, 12, 7, 0.95) 100%) !important;
+    border: 2px dashed rgba(212, 175, 55, 0.55) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.6),
+        inset 0 1px 2px rgba(255, 235, 175, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: #ffd978 !important;
+    box-shadow: 
+        0 14px 40px rgba(0, 0, 0, 0.75),
+        0 0 20px rgba(212, 175, 55, 0.25) !important;
 }
 
 [data-testid="stFileUploader"] section {
-    background-color: rgba(20, 13, 8, 0.8) !important;
-    border-radius: 10px !important;
+    background-color: rgba(22, 14, 9, 0.9) !important;
+    border-radius: 12px !important;
 }
 
 [data-testid="stFileUploader"] section button {
-    background: rgba(50, 34, 20, 0.9) !important;
-    color: #f5dfa3 !important;
-    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    background: linear-gradient(135deg, #70451e 0%, #4a2d12 100%) !important;
+    color: #fcedc5 !important;
+    border: 1px solid rgba(229, 201, 139, 0.5) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Code Snippets and Manuscript Quotes */
+/* Code Snippets & 3D Manuscript Quotes */
 .snippet-quote {
-    border-left: 3px solid #d4af37;
-    background: rgba(38, 26, 17, 0.75);
-    padding: 12px 16px;
-    border-radius: 0 10px 10px 0;
-    margin: 10px 0;
+    border-left: 4px solid #e5c98b;
+    background: linear-gradient(145deg, rgba(42, 28, 18, 0.85) 0%, rgba(25, 16, 10, 0.95) 100%);
+    padding: 14px 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 12px 0;
     font-style: italic;
-    color: #f1ebd8;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    color: #f7f1e1;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.45),
+        inset 0 1px 1px rgba(255, 235, 175, 0.2);
 }
 
-/* Pill Badges */
+/* 3D Glowing Pill Badges */
 .tag-badge {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    background: rgba(212, 175, 55, 0.2);
-    border: 1px solid rgba(212, 175, 55, 0.45);
-    color: #f5dfa3;
+    padding: 5px 14px;
+    border-radius: 24px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(139, 90, 43, 0.35) 100%);
+    border: 1px solid rgba(229, 201, 139, 0.6);
+    color: #fff2d1;
     margin-right: 8px;
     margin-bottom: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease;
 }
 
-/* Architecture Guide Section Box */
+.tag-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* 3D Architecture Guide Section Card */
 .arch-card {
-    background: linear-gradient(145deg, rgba(32, 22, 15, 0.9) 0%, rgba(18, 12, 8, 0.95) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    border-radius: 14px;
-    padding: 24px 28px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+    background: linear-gradient(145deg, rgba(34, 23, 14, 0.92) 0%, rgba(18, 12, 7, 0.98) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 18px;
+    padding: 26px 30px;
+    margin-bottom: 22px;
+    box-shadow: 
+        0 12px 32px rgba(0, 0, 0, 0.65),
+        inset 0 1px 2px rgba(255, 235, 175, 0.25);
+    transition: all 0.35s ease;
+}
+
+.arch-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 223, 163, 0.65);
+    box-shadow: 
+        0 18px 45px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(212, 175, 55, 0.2);
 }
 
 .arch-header {
     font-family: 'Cinzel', serif;
-    font-size: 1.35rem;
-    color: #f5dfa3;
-    margin-bottom: 8px;
+    font-size: 1.4rem;
+    color: #fcedc5;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .arch-sub {
-    color: #c9b994;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 16px;
+    color: #cfbf9b;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    margin-bottom: 18px;
 }
 </style>
 """
@@ -785,10 +991,31 @@ with st.sidebar:
         st.markdown(f"- 🏛️ *{b}*")
 
 
-# ── Main Header ───────────────────────────────────────────────────────────────
-st.title("🏛️ The Ancient Heritage Library & Book Intelligence 🏛️")
-st.markdown("<p style='text-align: center; color: #d6c6a2; font-size: 1.15rem;'>Step into an ancient sanctuary of knowledge. Upload any manuscript or book in any format to unlock instant AI analysis, cultural overviews, and grounded conversational Q&A.</p>", unsafe_allow_html=True)
-st.write("")
+# ── 3D Animated Main Hero Showcase ──────────────────────────────────────────
+hero_html = """
+<div class="hero-3d-wrapper">
+    <div class="hero-3d-card">
+        <div class="hero-badge">✨ Neural Literary Sanctuary • FastEmbed & Groq AI</div>
+        <div style="margin-bottom: 8px;">
+            <span class="floating-book-icon">📖</span>
+        </div>
+        <div class="hero-title">The Ancient Heritage Library</div>
+        <div style="font-family: 'Cinzel', serif; color: #e5c98b; font-size: 1.15rem; font-weight: 600; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase;">
+            🏛️ Deep Book Intelligence & Classical Archive 🏛️
+        </div>
+        <p class="hero-subtitle">
+            Step into a 3D sanctuary of timeless literature. Inscribe any manuscript in any format for instant semantic synthesis, deep thematic mapping, and voice-guided conversational inquiry.
+        </p>
+        <div style="margin-top: 18px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <span class="tag-badge">⚡ Sub-second RAG</span>
+            <span class="tag-badge">🌐 English & Hinglish Modes</span>
+            <span class="tag-badge">📜 8 Canonical Masterworks</span>
+            <span class="tag-badge">🔐 Zero Cloud Data Leakage</span>
+        </div>
+    </div>
+</div>
+"""
+st.markdown(hero_html, unsafe_allow_html=True)
 
 # ── Navigation Tabs ───────────────────────────────────────────────────────────
 tab_upload, tab_classic, tab_profile, tab_community, tab_admin, tab_about = st.tabs([
