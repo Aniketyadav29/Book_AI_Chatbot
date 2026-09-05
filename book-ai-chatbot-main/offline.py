@@ -55,11 +55,11 @@ def _call_ollama(base_url: str, model: str, prompt: str, system: str = "") -> st
         resp = requests.post(f"{base_url}/api/generate", json=payload, timeout=60)
         if resp.status_code == 200:
             return resp.json().get("response", "No response returned.")
+        return f"❌ Ollama error (status {resp.status_code}): {resp.text}"
     except requests.exceptions.ConnectionError:
         return "❌ Could not connect to Ollama. Make sure it's running (`ollama serve`)."
     except Exception as e:
         return f"❌ Error: {e}"
-    return "❌ Unexpected error."
 
 
 def render():

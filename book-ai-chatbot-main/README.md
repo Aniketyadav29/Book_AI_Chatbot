@@ -197,14 +197,18 @@ flowchart TD
 
 ## 🖥️ Core Navigation Tabs
 
-The user interface in [`app.py`](app.py) is organized into four core tabs:
+The user interface in [`app.py`](app.py) is organized into seven architectural chambers:
 
 | Tab | Icon | Description | Key Modules |
 | :--- | :---: | :--- | :--- |
-| **Upload & Analyze** | 📖 | Inscribe new manuscripts in any format. Instant metrics, automated 5-part executive overview, 1-click markdown report download, and grounded conversational Q&A with verifiable chunk citations. | `app.py`, `fastembed`, `pypdf`, `docx`, `bs4` |
+| **Upload & Analyze** | 📖 | Inscribe new manuscripts in any format. Instant metrics, automated 5-part executive overview, OCR manuscript scanning, ask-by-page filtering, smart summarizer, voice audio, external knowledge enrichment, and grounded conversational Q&A. | `app.py`, `ocr.py`, `ask_by_page.py`, `summarizer.py`, `knowledge.py`, `voice.py` |
 | **Classic Archive** | 🏛️ | Browse and query pre-indexed world classics (over 13,000 vectors). Zero upload required. Filter by title or ask questions across the entire collection. | `app.py`, `langchain-pinecone` |
-| **Reading Profile** | 👤 | Build your personal reader profile (genres, mood, reading level, favorite authors). Receive 6 AI-curated book recommendations with free read/borrow links, manage persistent JSON profiles, and adjust language / Hinglish modes. | `profile.py`, `multilingual.py`, `llama-3.3-70b-versatile` |
+| **Reading Profile** | 👤 | Build your personal reader profile (genres, mood, reading level, favorite authors). Receive 6 AI-curated book recommendations with free read/borrow links, manage persistent JSON profiles, and adjust language / Hinglish modes. | `profile.py`, `multilingual.py` |
+| **Community Library** | 📚 | Upload community manuscripts for administrative review and browse/download approved community books across multiple genres. | `community_books.py` |
+| **Offline Local AI** | 💻 | Run private local AI queries via Ollama without any cloud API key or internet access required. | `offline.py` |
+| **Admin & Analytics** | 🔐 | Unified control chamber with community submissions review, interaction telemetry dashboard with feedback ratings, and API key manager. | `community_books.py`, `analytics.py`, `api_keys.py` |
 | **Guide & Architecture** | 🏰 | Comprehensive interactive guide detailing data ingestion pipelines, vector mathematics, similarity thresholds, and model parameters. | `app.py` |
+
 
 ---
 

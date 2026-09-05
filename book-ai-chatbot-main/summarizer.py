@@ -8,18 +8,19 @@ import re
 import os
 
 
-# Ordered list of active Groq models to try (llama-3.3-70b-versatile is decommissioned)
+# Ordered list of active Groq models to try
 _FALLBACK_MODELS = [
     "openai/gpt-oss-120b",
     "openai/gpt-oss-20b",
     "qwen/qwen3.8-27b",
-    "groq/compound-mini",
+    "qwen/qwen3.6-27b",
     "groq/compound",
+    "groq/compound-mini",
 ]
 
 
 def _get_llm():
-    """Lazy-load the Groq LLM from session state or env, with model fallback."""
+    """Lazy-load the Groq LLM from session state, env, or secrets, with model fallback."""
     if "llm" in st.session_state and st.session_state.llm is not None:
         return st.session_state.llm
     try:
@@ -31,8 +32,13 @@ def _get_llm():
             except Exception:
                 pass
         if not api_key:
+            try:
+                api_key = st.secrets.get("GROQ_API_KEY", "").strip()
+            except Exception:
+                pass
+        if not api_key:
             return None
-        # Prefer the user-selected model if it's valid, then fall back through the list
+
         user_model = st.session_state.get("selected_model", "")
         candidates = []
         if user_model and user_model in _FALLBACK_MODELS:
@@ -40,6 +46,7 @@ def _get_llm():
         for m in _FALLBACK_MODELS:
             if m not in candidates:
                 candidates.append(m)
+
         for model_name in candidates:
             try:
                 return ChatGroq(model=model_name, temperature=0.3, api_key=api_key)
@@ -54,7 +61,7 @@ def _call_llm(prompt: str) -> str:
     """Call LLM with a prompt and return result text."""
     llm = _get_llm()
     if llm is None:
-        return "⚠️ LLM not available. Please ensure your GROQ_API_KEY is set."
+        return "⚠️ LLM not available. Please ensure your GROQ_API_KEY is set in the sidebar, .env, or Streamlit Secrets."
     try:
         from langchain_core.messages import HumanMessage
         result = llm.invoke([HumanMessage(content=prompt)])
@@ -68,7 +75,6 @@ def _highlight_sentences(text: str) -> str:
     sentences = re.split(r'(?<=[.!?])\s+', text)
     if not sentences:
         return text
-    # Highlight the first 30% of sentences as "key"
     highlight_count = max(1, len(sentences) // 3)
     result_parts = []
     for i, sentence in enumerate(sentences):
@@ -97,6 +103,11 @@ def render_summarizer():
 
     if source == "Use Last AI Answer":
         text = st.session_state.get("last_response", "")
+        if not text and st.session_state.get("uploaded_chat_history"):
+            for m in reversed(st.session_state.uploaded_chat_history):
+                if m.get("role") == "assistant" and m.get("content"):
+                    text = m["content"]
+                    break
         if not text:
             st.info("Ask a question in the chat first to generate a response to summarize.")
             return
@@ -131,34 +142,27 @@ def render_summarizer():
         key="sum_mode"
     )
 
-    if st.button("✨ Generate", use_container_width=True, key="sum_generate_btn"):
+    if st.button("✨ Generate Summary", use_container_width=True, key="sum_generate_btn"):
         with st.spinner("Analysing with AI…"):
-
             if mode == "📝 Concise Summary":
                 prompt = (
                     f"You are a literary analyst. Summarize the following text in 3–5 clear, "
                     f"insightful sentences. Capture the core themes and main ideas.\n\nText:\n{text[:4000]}"
                 )
-                result = _call_llm(prompt)
-                st.markdown("**📝 Summary:**")
-                st.markdown(f"""
-                <div style='background:rgba(20,14,8,0.8);border:1px solid rgba(212,175,55,0.35);
-                    border-radius:12px;padding:18px;color:#f3ecd8;font-size:0.98rem;line-height:1.7;'>
-                {result}
-                </div>""", unsafe_allow_html=True)
+                res = _call_llm(prompt)
+                st.session_state["last_summary_result"] = res
+                st.session_state["last_summary_html"] = res
+                st.session_state["last_summary_mode"] = mode
 
             elif mode == "📌 Key Bullet Points":
                 prompt = (
                     f"Extract the 5–8 most important ideas or facts from the following text as "
                     f"concise bullet points. Use '•' as bullet prefix.\n\nText:\n{text[:4000]}"
                 )
-                result = _call_llm(prompt)
-                st.markdown("**📌 Key Points:**")
-                st.markdown(f"""
-                <div style='background:rgba(20,14,8,0.8);border:1px solid rgba(212,175,55,0.35);
-                    border-radius:12px;padding:18px;color:#f3ecd8;font-size:0.98rem;line-height:1.8;'>
-                {result.replace(chr(10), "<br>")}
-                </div>""", unsafe_allow_html=True)
+                res = _call_llm(prompt)
+                st.session_state["last_summary_result"] = res
+                st.session_state["last_summary_html"] = res.replace(chr(10), "<br>")
+                st.session_state["last_summary_mode"] = mode
 
             elif mode == "💬 Key Quotes":
                 prompt = (
@@ -166,29 +170,36 @@ def render_summarizer():
                     f"or insightful quotes. Present each in quotation marks on a new line, "
                     f"followed by a brief (1-sentence) explanation of why it matters.\n\nText:\n{text[:4000]}"
                 )
-                result = _call_llm(prompt)
-                st.markdown("**💬 Key Quotes:**")
-                st.markdown(f"""
-                <div style='background:rgba(20,14,8,0.8);border:1px solid rgba(212,175,55,0.35);
-                    border-radius:12px;padding:18px;color:#f3ecd8;font-size:0.98rem;line-height:1.8;
-                    font-style:italic;'>
-                {result.replace(chr(10), "<br>")}
-                </div>""", unsafe_allow_html=True)
+                res = _call_llm(prompt)
+                st.session_state["last_summary_result"] = res
+                st.session_state["last_summary_html"] = res.replace(chr(10), "<br>")
+                st.session_state["last_summary_mode"] = mode
 
             else:  # Highlight Mode
-                st.markdown("**🔆 Highlighted Key Sentences:**")
                 highlighted = _highlight_sentences(text[:3000])
-                st.markdown(f"""
-                <div style='background:rgba(20,14,8,0.8);border:1px solid rgba(212,175,55,0.35);
-                    border-radius:12px;padding:18px;color:#f3ecd8;font-size:0.97rem;line-height:1.8;'>
-                {highlighted}
-                </div>""", unsafe_allow_html=True)
+                plain_summary = re.sub(r'<[^>]+>', '', highlighted)
+                st.session_state["last_summary_result"] = plain_summary
+                st.session_state["last_summary_html"] = highlighted
+                st.session_state["last_summary_mode"] = mode
 
-        # Download button
+    # Display generated summary if present in session state
+    saved_summary = st.session_state.get("last_summary_result")
+    saved_html = st.session_state.get("last_summary_html", saved_summary)
+    saved_mode = st.session_state.get("last_summary_mode", "Summary")
+
+    if saved_summary:
+        st.markdown(f"**{saved_mode}:**")
+        st.markdown(f"""
+        <div style='background:rgba(20,14,8,0.85);border:1px solid rgba(212,175,55,0.35);
+            border-radius:12px;padding:18px;color:#f3ecd8;font-size:0.98rem;line-height:1.75;'>
+        {saved_html}
+        </div>""", unsafe_allow_html=True)
+
         st.download_button(
-            label="📥 Download Summary",
-            data=text,
+            label="📥 Download Generated Summary",
+            data=saved_summary,
             file_name="book_summary.txt",
             mime="text/plain",
-            key="sum_download"
+            key="sum_download",
+            use_container_width=True
         )

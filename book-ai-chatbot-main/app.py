@@ -5,7 +5,7 @@ import textwrap
 import zipfile
 import numpy as np
 import streamlit as st
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from bs4 import BeautifulSoup
 import docx
 from pypdf import PdfReader
@@ -45,6 +45,22 @@ try:
     import community_books
 except ImportError:
     community_books = None
+try:
+    import ocr
+except ImportError:
+    ocr = None
+try:
+    import ask_by_page
+except ImportError:
+    ask_by_page = None
+try:
+    import api_keys
+except ImportError:
+    api_keys = None
+try:
+    import style
+except ImportError:
+    style = None
 
 # Load .env file explicitly if present
 try:
@@ -990,24 +1006,48 @@ def build_in_memory_index(pages: List[Dict[str, Any]], embedding_model: FastEmbe
     }
 
 
-def search_uploaded_book(query: str, index_data: Dict[str, Any], embedding_model: FastEmbedEmbeddings, k: int = 6) -> List[Dict[str, Any]]:
+def search_uploaded_book(query: str, index_data: Dict[str, Any], embedding_model: FastEmbedEmbeddings, k: int = 6, page_filter: Optional[int] = None) -> List[Dict[str, Any]]:
     """
     Searches the in-memory vector index for the top-k most relevant chunks.
+    Optionally filters or prioritizes a specific section or page number.
     """
     if not index_data or not index_data.get("chunks") or index_data.get("embeddings_matrix") is None:
         return []
     
+    chunks = index_data["chunks"]
+    matrix = index_data["embeddings_matrix"]
+
+    if page_filter is not None:
+        matching_indices = [idx for idx, c in enumerate(chunks) if c.get("page") == page_filter]
+        if matching_indices:
+            query_emb = np.array(embedding_model.embed_query(query), dtype=np.float32)
+            q_norm = np.linalg.norm(query_emb)
+            if q_norm > 0:
+                query_emb = query_emb / q_norm
+            
+            sub_matrix = matrix[matching_indices]
+            sub_scores = np.dot(sub_matrix, query_emb)
+            top_sub = np.argsort(sub_scores)[::-1][:k]
+
+            results = []
+            for sub_idx in top_sub:
+                orig_idx = matching_indices[sub_idx]
+                chunk_info = dict(chunks[orig_idx])
+                chunk_info["score"] = float(sub_scores[sub_idx])
+                results.append(chunk_info)
+            return results
+
     query_emb = np.array(embedding_model.embed_query(query), dtype=np.float32)
     q_norm = np.linalg.norm(query_emb)
     if q_norm > 0:
         query_emb = query_emb / q_norm
     
-    scores = np.dot(index_data["embeddings_matrix"], query_emb)
+    scores = np.dot(matrix, query_emb)
     top_indices = np.argsort(scores)[::-1][:k]
     
     results = []
     for idx in top_indices:
-        chunk_info = dict(index_data["chunks"][idx])
+        chunk_info = dict(chunks[idx])
         chunk_info["score"] = float(scores[idx])
         results.append(chunk_info)
     
@@ -1285,12 +1325,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Navigation Tabs ───────────────────────────────────────────────────────────
-tab_upload, tab_classic, tab_profile, tab_community, tab_admin, tab_about = st.tabs([
+tab_upload, tab_classic, tab_profile, tab_community, tab_offline, tab_admin, tab_about = st.tabs([
     "📖 Upload & Analyze",
     "🏛️ Classic Archive",
-    "👤 Profile",
+    "👤 Profile & Multilingual",
     "📚 Community Library",
-    "🔐 Admin Panel",
+    "💻 Offline Local AI",
+    "🔐 Admin & Analytics",
     "🏰 Guide"
 ])
 
@@ -1307,6 +1348,12 @@ with tab_upload:
         type=["pdf", "epub", "docx", "doc", "txt", "md", "markdown", "html", "htm"],
         help="Upload any book, manuscript, or document to analyze."
     )
+
+    with st.expander("📷 Scanned Manuscript & Image OCR Pipeline", expanded=False):
+        if ocr:
+            ocr.render_ocr_uploader()
+        else:
+            st.info("OCR module not available.")
     
     if uploaded_file is not None:
         file_key = f"{uploaded_file.name}_{uploaded_file.size}"
@@ -1433,7 +1480,36 @@ with tab_upload:
         # Q&A Chatbot Section for Uploaded Book
         st.markdown(f"### 💬 Inquire About *{book['filename']}*")
         st.caption("Ask questions about specific chapters, character arcs, cultural motifs, or plot turning points.")
-        
+
+        # Modular Literary Toolkit
+        with st.expander("🛠️ Manuscript Analysis & Inquiry Toolkit (Page Filter, Summarizer, Voice, Knowledge)", expanded=False):
+            t_page, t_sum, t_know, t_voice = st.tabs([
+                "🎯 Ask-by-Page",
+                "⚡ AI Summarizer",
+                "🔗 External Knowledge",
+                "🎙️ Voice Audio"
+            ])
+            with t_page:
+                if ask_by_page:
+                    ask_by_page.render_page_selector()
+                else:
+                    st.info("Ask-by-page module not available.")
+            with t_sum:
+                if summarizer:
+                    summarizer.render_summarizer()
+                else:
+                    st.info("Summarizer module not available.")
+            with t_know:
+                if knowledge:
+                    knowledge.render_external_search()
+                else:
+                    st.info("External knowledge module not available.")
+            with t_voice:
+                if voice:
+                    voice.render()
+                else:
+                    st.info("Voice module not available.")
+
         # Quick Starter Question Pills
         starter_cols = st.columns(4)
         quick_questions = [
@@ -1447,7 +1523,7 @@ with tab_upload:
             with starter_cols[i]:
                 if st.button(f"💡 {q_text}", key=f"quick_q_{i}", use_container_width=True):
                     selected_quick_q = q_text
-        
+
         # Display Uploaded Book Chat History
         for msg in st.session_state.uploaded_chat_history:
             with st.chat_message(msg["role"], avatar="📜" if msg["role"] == "user" else "🏛️"):
@@ -1471,7 +1547,7 @@ with tab_upload:
         # Chat Input Bar
         chat_query = st.chat_input(f"Ask a question about {book['filename']}...")
         query_to_process = selected_quick_q or chat_query
-        
+
         if query_to_process:
             active_groq_key = get_secret("GROQ_API_KEY")
             if not active_groq_key:
@@ -1480,13 +1556,13 @@ with tab_upload:
                 st.session_state.uploaded_chat_history.append({"role": "user", "content": query_to_process})
                 with st.chat_message("user", avatar="📜"):
                     st.markdown(query_to_process)
-                
+
                 with st.chat_message("assistant", avatar="🏛️"):
                     with st.spinner("Consulting manuscript excerpts and formulating answer..."):
                         try:
                             llm = ChatGroq(model=selected_model, temperature=temperature, api_key=active_groq_key)
                             emb_model = get_embedding_model()
-                            
+
                             # Conversational standalone question reformulation
                             history_list = st.session_state.uploaded_chat_history[:-1]
                             if len(history_list) > 0:
@@ -1497,28 +1573,35 @@ with tab_upload:
                             else:
                                 standalone_q = query_to_process
                                 history_text = "No prior history."
-                            
+
+                            page_filter = st.session_state.get("selected_page")
                             retrieved_snippets = search_uploaded_book(
                                 standalone_q,
                                 book["index"],
                                 emb_model,
-                                k=retrieval_k
+                                k=retrieval_k,
+                                page_filter=page_filter
                             )
-                            
+
                             context_text = "\n\n---\n\n".join([
                                 f"[Passage {idx+1} | Page/Section {s.get('page', 'N/A')}]:\n{s['text']}" 
                                 for idx, s in enumerate(retrieved_snippets)
                             ])
-                            
+
+                            # External knowledge injection
+                            external_ctx = st.session_state.get("external_context", "")
+                            if external_ctx:
+                                context_text += f"\n\n--- External Reference Knowledge (Wikipedia / Open Library) ---\n{external_ctx}"
+
                             current_lang = st.session_state.get("response_language", "English")
                             lang_rules = LANG_QA_SYSTEM_HINGLISH if current_lang == "Hinglish" else LANG_QA_SYSTEM_ENGLISH
-                            
+
                             lang_intro = (
                                 f'Aap ek mast literary aur historical scholar hain jo "{book["filename"]}" ke baare mein baat kar rahe hain.'
                                 if current_lang == "Hinglish"
                                 else f'You are an insightful, highly knowledgeable literary and historical scholar discussing the uploaded manuscript titled: "{book["filename"]}".'
                             )
-                            
+
                             qa_sys = SystemMessage(content=f"""{lang_intro}
 
 {lang_rules}
@@ -1532,12 +1615,16 @@ Conversation History:
                             qa_human = HumanMessage(content=standalone_q)
                             response = llm.invoke([qa_sys, qa_human])
                             answer = response.content
-                            
+
                             st.markdown(answer)
-                            
+                            if external_ctx:
+                                st.caption("🌐 *Answer enriched with active external reference knowledge.*")
+
                             if retrieved_snippets:
                                 with st.expander("🔍 View Retrieved Manuscript Passages"):
                                     st.write(f"**Interpretation:** `{standalone_q}`")
+                                    if page_filter:
+                                        st.caption(f"🎯 Filtered to Section/Page: {page_filter}")
                                     for j, snip in enumerate(retrieved_snippets, start=1):
                                         st.markdown(f"""
                                         <div class="snippet-quote">
@@ -1545,13 +1632,24 @@ Conversation History:
                                             {snip['text']}
                                         </div>
                                         """, unsafe_allow_html=True)
-                            
+
+                            st.session_state["last_response"] = answer
                             st.session_state.uploaded_chat_history.append({
                                 "role": "assistant",
                                 "content": answer,
                                 "snippets": retrieved_snippets
                             })
-                            
+
+                            if analytics:
+                                try:
+                                    analytics.log_interaction(
+                                        st.session_state.get("user_id", "anonymous"),
+                                        query_to_process,
+                                        answer
+                                    )
+                                except Exception:
+                                    pass
+
                         except Exception as e:
                             st.error(f"Error answering question: {e}")
 
@@ -1624,16 +1722,20 @@ with tab_classic:
                             retrieved_docs = retriever.invoke(standalone_question)
                             context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
                             snippet_texts = [doc.page_content for doc in retrieved_docs]
-                            
+
+                            external_ctx = st.session_state.get("external_context", "")
+                            if external_ctx:
+                                context_text += f"\n\n--- External Reference Knowledge (Wikipedia / Open Library) ---\n{external_ctx}"
+
                             current_lang = st.session_state.get("response_language", "English")
                             lang_rules = LANG_QA_SYSTEM_HINGLISH if current_lang == "Hinglish" else LANG_QA_SYSTEM_ENGLISH
-                            
+
                             classic_intro = (
                                 "Aap ek jadoo-bhari archive ke scholar hain jo classic books ke baare mein desi, friendly style mein batate hain. Directly aur confidently jawab do, jaise ek padha-likha yaar bata raha ho."
                                 if current_lang == "Hinglish"
-                                else "You are a knowledgeable literary and cultural scholar helping a user explore classic books in the archive. Answer the way a well-read expert would in conversation \u2014 direct, confident, and in your own voice."
+                                else "You are a knowledgeable literary and cultural scholar helping a user explore classic books in the archive. Answer the way a well-read expert would in conversation — direct, confident, and in your own voice."
                             )
-                            
+
                             sys_msg = SystemMessage(content=f"""{classic_intro}
 
 {lang_rules}
@@ -1646,9 +1748,11 @@ Context:
                             user_msg = HumanMessage(content=standalone_question)
                             response = llm.invoke([sys_msg, user_msg])
                             response_content = response.content
-                            
+
                             st.markdown(response_content)
-                            
+                            if external_ctx:
+                                st.caption("🌐 *Answer enriched with active external reference knowledge.*")
+
                             with st.expander("👀 See how the AI thought & what it read"):
                                 st.write(f"**Interpreted Question:** `{standalone_question}`")
                                 if len(retrieved_docs) > 0:
@@ -1662,20 +1766,31 @@ Context:
                                         """, unsafe_allow_html=True)
                                 else:
                                     st.write("No matching snippets found. The AI answered from its own literary memory.")
-                            
+
+                            st.session_state["last_response"] = response_content
                             st.session_state.classic_chat_history.append({
                                 "role": "assistant",
                                 "content": response_content,
                                 "snippets": snippet_texts
                             })
-                            
+
+                            if analytics:
+                                try:
+                                    analytics.log_interaction(
+                                        st.session_state.get("user_id", "anonymous"),
+                                        classic_prompt,
+                                        response_content
+                                    )
+                                except Exception:
+                                    pass
+
                     except Exception as e:
                         st.error(f"Something went wrong: {e}")
 
 
 
 # ==============================================================================
-# TAB 3: READING PROFILE
+# TAB 3: READING PROFILE & MULTILINGUAL SETTINGS
 # ==============================================================================
 with tab_profile:
     st.markdown("### 👤 Personal Reading Profile")
@@ -1708,15 +1823,41 @@ with tab_community:
 
 
 # ==============================================================================
-# TAB 5: ADMIN PANEL
+# TAB 5: OFFLINE LOCAL LLM MODE (OLLAMA)
+# ==============================================================================
+with tab_offline:
+    if offline:
+        offline.render()
+    else:
+        st.error("offline.py module not found.")
+
+
+# ==============================================================================
+# TAB 6: ADMIN & ANALYTICS CONTROL CHAMBER
 # ==============================================================================
 with tab_admin:
-    st.markdown("### 🔐 Admin Panel")
-    st.caption("Review and approve community book submissions. Approved books appear in the Community Library.")
-    if community_books:
-        community_books.render_admin_panel()
-    else:
-        st.error("community_books.py module not found.")
+    st.markdown("### 🔐 Admin & Analytics Control Chamber")
+    st.caption("Review community book submissions, inspect query telemetry, and manage credentials.")
+    admin_sub1, admin_sub2, admin_sub3 = st.tabs([
+        "📚 Community Submissions",
+        "📊 Analytics & Telemetry",
+        "🔑 Key Management"
+    ])
+    with admin_sub1:
+        if community_books:
+            community_books.render_admin_panel()
+        else:
+            st.error("community_books.py module not found.")
+    with admin_sub2:
+        if analytics:
+            analytics.render_dashboard()
+        else:
+            st.error("analytics.py module not found.")
+    with admin_sub3:
+        if api_keys:
+            api_keys.render_api_key_manager()
+        else:
+            st.error("api_keys.py module not found.")
 
 
 # ==============================================================================

@@ -260,9 +260,8 @@ def render_admin_panel():
                     st.error("❌ Incorrect password.")
         with col_hint:
             env_path = Path(os.path.abspath(__file__)).parent / ".env"
-            st.caption(f"💡 Set `ADMIN_PASSWORD=yourpassword` in `.env` to change the password.")
-            with st.expander("🔍 Debug info", expanded=False):
-                st.code(f".env path : {env_path}\n.env found: {env_path.exists()}\nActive pwd : {_get_admin_password()}", language="text")
+            with st.expander("ℹ️ Configuration Info", expanded=False):
+                st.caption(f"Environment config status: {'Custom .env detected' if env_path.exists() else 'Default settings active'}")
         return
 
     col_title, col_logout = st.columns([4,1])

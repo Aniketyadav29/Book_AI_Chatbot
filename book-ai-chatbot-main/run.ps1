@@ -48,11 +48,7 @@ if ($groq -eq "your_groq_api_key_here" -or [string]::IsNullOrWhiteSpace($groq)) 
 }
 
 if ($pinecone -eq "your_pinecone_api_key_here" -or [string]::IsNullOrWhiteSpace($pinecone)) {
-    Write-Host ""
-    Write-Host "❌ PINECONE_API_KEY is not set in your .env file." -ForegroundColor Red
-    Write-Host "   Get one free at: https://app.pinecone.io" -ForegroundColor Yellow
-    Read-Host "Press Enter to exit"
-    exit 1
+    Write-Host "🟡 WARNING: PINECONE_API_KEY is not set. You can still upload manuscripts and use all local features, but Canonical Classics cloud archive will be disabled." -ForegroundColor Yellow
 }
 
 Write-Host ""
