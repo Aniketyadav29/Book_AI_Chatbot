@@ -78,13 +78,20 @@ ancient_theme_css = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-/* Main App Background: Deep Ancient Stone Sanctuary with Ambient Glow */
+/* ── Seamless Dark Header: Eliminate Default White Bar ──────────────────────── */
+header[data-testid="stHeader"], .stAppHeader {
+    background: transparent !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+}
+
+/* ── Main App Background: Deep Ancient Stone Sanctuary with Ambient 3D Glow ── */
 .stApp {
     background: 
-        radial-gradient(ellipse at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 10% 40%, rgba(139, 90, 43, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 45%),
-        linear-gradient(180deg, rgba(14, 10, 7, 0.92) 0%, rgba(10, 7, 5, 0.95) 50%, rgba(6, 4, 3, 0.98) 100%),
+        radial-gradient(ellipse at 50% -20%, rgba(212, 175, 55, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 10% 40%, rgba(139, 90, 43, 0.14) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 45%),
+        linear-gradient(180deg, rgba(14, 10, 7, 0.93) 0%, rgba(10, 7, 5, 0.96) 50%, rgba(6, 4, 3, 0.98) 100%),
         url("https://images.unsplash.com/photo-1599827056326-802c67d16ee6?auto=format&fit=crop&w=2560&q=85") !important;
     background-size: cover !important;
     background-position: center center !important;
@@ -94,7 +101,7 @@ ancient_theme_css = """
     font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-/* Headings with 3D Embossed Heritage Typography */
+/* ── Headings with 3D Embossed Heritage Typography ───────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Cinzel', serif !important;
     color: #f7e2a9 !important;
@@ -109,34 +116,46 @@ h1 {
     font-weight: 800;
 }
 
-/* 3D Animated Hero Showcase Banner */
+/* ── 3D Animated Hero Showcase Banner ────────────────────────────────────────── */
 .hero-3d-wrapper {
     perspective: 1200px;
-    margin: 10px auto 30px auto;
+    margin: 10px auto 26px auto;
     text-align: center;
 }
 
 .hero-3d-card {
-    background: linear-gradient(145deg, rgba(38, 25, 16, 0.88) 0%, rgba(20, 13, 8, 0.95) 60%, rgba(12, 8, 5, 0.98) 100%);
-    border: 1px solid rgba(229, 201, 139, 0.45);
-    border-radius: 24px;
-    padding: 38px 28px 30px 28px;
+    background: linear-gradient(145deg, rgba(40, 26, 17, 0.9) 0%, rgba(22, 14, 9, 0.96) 60%, rgba(13, 8, 5, 0.99) 100%);
+    border: 1.5px solid rgba(229, 201, 139, 0.5);
+    border-radius: 26px;
+    padding: 38px 28px 32px 28px;
     position: relative;
     overflow: hidden;
     box-shadow: 
-        0 20px 50px rgba(0, 0, 0, 0.85),
-        0 0 30px rgba(212, 175, 55, 0.2),
-        inset 0 1px 2px rgba(255, 235, 175, 0.4),
-        inset 0 -1px 20px rgba(0, 0, 0, 0.8);
+        0 24px 60px rgba(0, 0, 0, 0.88),
+        0 0 35px rgba(212, 175, 55, 0.25),
+        inset 0 2px 3px rgba(255, 235, 175, 0.45),
+        inset 0 -2px 15px rgba(0, 0, 0, 0.85);
     transform-style: preserve-3d;
+    animation: heroFloat3D 6s ease-in-out infinite alternate;
     transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
 }
 
+@keyframes heroFloat3D {
+    0% {
+        transform: translateY(0px) rotateX(0deg);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.88), 0 0 35px rgba(212, 175, 55, 0.25);
+    }
+    100% {
+        transform: translateY(-8px) rotateX(1.5deg);
+        box-shadow: 0 34px 75px rgba(0, 0, 0, 0.92), 0 0 50px rgba(212, 175, 55, 0.35);
+    }
+}
+
 .hero-3d-card:hover {
-    transform: translateY(-6px) rotateX(2deg);
+    transform: translateY(-10px) rotateX(2.5deg) scale(1.008);
     box-shadow: 
-        0 30px 70px rgba(0, 0, 0, 0.9),
-        0 0 45px rgba(212, 175, 55, 0.35),
+        0 36px 80px rgba(0, 0, 0, 0.94),
+        0 0 55px rgba(212, 175, 55, 0.45),
         inset 0 1px 3px rgba(255, 245, 200, 0.6);
 }
 
@@ -147,7 +166,7 @@ h1 {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 60%);
     pointer-events: none;
     animation: rotateGlow 18s linear infinite;
 }
@@ -158,133 +177,292 @@ h1 {
 }
 
 .floating-book-icon {
-    font-size: 3.4rem;
+    font-size: 3.6rem;
     display: inline-block;
-    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 25px rgba(212, 175, 55, 0.6));
-    animation: float3d 4s ease-in-out infinite alternate;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(212, 175, 55, 0.7));
+    animation: floatBook3d 4.5s ease-in-out infinite alternate;
     transform-origin: center;
 }
 
-@keyframes float3d {
-    0% { transform: translateY(0px) rotateY(-8deg) rotateZ(-2deg); }
-    50% { transform: translateY(-10px) rotateY(0deg) rotateZ(1deg); }
-    100% { transform: translateY(-16px) rotateY(8deg) rotateZ(3deg); }
+@keyframes floatBook3d {
+    0% { transform: translateY(0px) rotateY(-10deg) rotateZ(-3deg) scale(0.98); }
+    50% { transform: translateY(-12px) rotateY(0deg) rotateZ(1deg) scale(1.05); }
+    100% { transform: translateY(-18px) rotateY(10deg) rotateZ(3deg) scale(1); }
 }
 
 .hero-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(139, 90, 43, 0.35) 100%);
-    border: 1px solid rgba(229, 201, 139, 0.55);
-    padding: 6px 18px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(139, 90, 43, 0.4) 100%);
+    border: 1.5px solid rgba(229, 201, 139, 0.65);
+    padding: 7px 20px;
     border-radius: 30px;
     font-size: 0.85rem;
     font-weight: 700;
-    color: #fcedc5;
-    letter-spacing: 1px;
+    color: #fff4d4;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 240, 190, 0.4);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 240, 190, 0.5);
     margin-bottom: 14px;
 }
 
 .hero-title {
     font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
-    font-size: 2.35rem;
+    font-size: 2.45rem;
     font-weight: 900;
     margin: 8px 0 12px 0;
     color: #fff2cc;
-    letter-spacing: 1.5px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(229, 201, 139, 0.5);
+    letter-spacing: 1.8px;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9), 0 0 35px rgba(229, 201, 139, 0.55);
+    animation: textGoldShimmer 4s ease-in-out infinite alternate;
+}
+
+@keyframes textGoldShimmer {
+    0% { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(229, 201, 139, 0.45); }
+    100% { text-shadow: 0 4px 16px rgba(0, 0, 0, 0.95), 0 0 40px rgba(255, 226, 140, 0.75), 0 0 60px rgba(212, 175, 55, 0.5); }
 }
 
 .hero-subtitle {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #ded1b4;
+    color: #e0d3b6;
     font-size: 1.08rem;
-    max-width: 800px;
+    max-width: 820px;
     margin: 0 auto;
-    line-height: 1.65;
+    line-height: 1.7;
 }
 
-/* Sidebar with 3D Antique Rosewood & Brass Motif */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, rgba(20, 14, 9, 0.97) 0%, rgba(13, 9, 6, 0.99) 100%) !important;
-    border-right: 1px solid rgba(212, 175, 55, 0.35) !important;
-    backdrop-filter: blur(16px);
-    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.85);
+/* ── 3D Decorative Navigation Pedestal Header ────────────────────────────────── */
+.nav-pedestal-header {
+    text-align: center;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
 }
 
-[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-    color: #f7e2a9 !important;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-}
-
-/* 3D Navigation Tabs */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 12px;
-    background: linear-gradient(145deg, rgba(28, 18, 11, 0.92) 0%, rgba(18, 12, 7, 0.96) 100%);
-    padding: 10px 14px;
-    border-radius: 18px;
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    margin-bottom: 28px;
+.nav-pedestal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(46, 32, 20, 0.95) 0%, rgba(24, 15, 9, 0.98) 100%);
+    border: 1.5px solid rgba(229, 201, 139, 0.6);
+    padding: 7px 24px;
+    border-radius: 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #fcedc5;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.65),
-        inset 0 1px 1px rgba(255, 235, 175, 0.25);
+        0 6px 20px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(212, 175, 55, 0.25),
+        inset 0 1px 2px rgba(255, 240, 190, 0.4);
+    animation: pedestalPulse 3.5s ease-in-out infinite alternate;
 }
 
+@keyframes pedestalPulse {
+    0% {
+        border-color: rgba(229, 201, 139, 0.5);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+    100% {
+        border-color: rgba(255, 230, 155, 0.9);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 28px rgba(212, 175, 55, 0.45);
+    }
+}
+
+/* ── 3D ANIMATED FLOATING NAVBAR BOX CONTAINER ───────────────────────────────── */
+.stTabs {
+    perspective: 1400px !important;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    background: 
+        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.24) 0%, transparent 70%),
+        linear-gradient(145deg, rgba(38, 25, 16, 0.96) 0%, rgba(22, 14, 9, 0.98) 50%, rgba(13, 8, 5, 0.99) 100%) !important;
+    padding: 10px 14px !important;
+    border-radius: 22px !important;
+    border: 2px solid rgba(229, 201, 139, 0.55) !important;
+    position: relative !important;
+    margin: 8px auto 28px auto !important;
+    transform-style: preserve-3d !important;
+    animation: navBoxLevitate 5s ease-in-out infinite alternate, navBorderGlow 4s ease-in-out infinite alternate !important;
+    box-shadow: 
+        0 22px 55px -5px rgba(0, 0, 0, 0.92),
+        0 0 35px rgba(212, 175, 55, 0.3),
+        inset 0 2px 3px rgba(255, 238, 185, 0.45),
+        inset 0 -2px 8px rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(24px) !important;
+}
+
+/* 3D Levitation Motion for Navbar Box */
+@keyframes navBoxLevitate {
+    0% {
+        transform: translateY(0px) rotateX(0deg);
+        box-shadow: 
+            0 18px 45px -5px rgba(0, 0, 0, 0.88),
+            0 0 28px rgba(212, 175, 55, 0.25),
+            inset 0 2px 3px rgba(255, 238, 185, 0.4),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.8);
+    }
+    100% {
+        transform: translateY(-8px) rotateX(1.2deg);
+        box-shadow: 
+            0 28px 65px -5px rgba(0, 0, 0, 0.96),
+            0 0 48px rgba(212, 175, 55, 0.45),
+            inset 0 2px 4px rgba(255, 245, 205, 0.6),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* Animated Perimeter Border Shimmer */
+@keyframes navBorderGlow {
+    0% {
+        border-color: rgba(212, 175, 55, 0.45);
+    }
+    50% {
+        border-color: rgba(255, 228, 150, 0.9);
+        box-shadow: 
+            0 24px 60px rgba(0, 0, 0, 0.94),
+            0 0 42px rgba(212, 175, 55, 0.45),
+            inset 0 2px 4px rgba(255, 240, 190, 0.55),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.8);
+    }
+    100% {
+        border-color: rgba(212, 175, 55, 0.45);
+    }
+}
+
+/* ── REMOVE DEFAULT STREAMLIT RED UNDERLINE AND BORDER ──────────────────────── */
+[data-baseweb="tab-highlight"], 
+.stTabs [data-baseweb="tab-highlight"],
+[data-baseweb="tab-border"],
+.stTabs [data-baseweb="tab-border"] {
+    display: none !important;
+    height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    visibility: hidden !important;
+}
+
+/* ── ALL NAVBAR TABS: 3D TACTILE CAPSULE PLAQUES ────────────────────────────── */
 .stTabs [data-baseweb="tab"] {
-    border-radius: 12px !important;
-    color: #c9b998 !important;
+    position: relative !important;
+    border-radius: 13px !important;
+    color: #e5d5be !important;
     font-family: 'Cinzel', serif !important;
     font-weight: 700 !important;
-    font-size: 1rem !important;
-    padding: 10px 24px !important;
-    background: transparent !important;
-    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-    border: 1px solid transparent !important;
-}
-
-.stTabs [data-baseweb="tab"]:hover {
-    color: #fff2d1 !important;
-    background: rgba(212, 175, 55, 0.12) !important;
-    transform: translateY(-2px);
-}
-
-.stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.32) 0%, rgba(139, 90, 43, 0.45) 100%) !important;
-    color: #fff9e6 !important;
-    border: 1px solid rgba(245, 223, 163, 0.75) !important;
+    font-size: 0.87rem !important;
+    letter-spacing: 0.3px !important;
+    padding: 8px 14px !important;
+    background: linear-gradient(145deg, rgba(48, 33, 21, 0.88) 0%, rgba(25, 16, 10, 0.95) 100%) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.38) !important;
     box-shadow: 
-        0 6px 20px rgba(212, 175, 55, 0.35),
-        inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
-    text-shadow: 0 0 14px rgba(245, 223, 163, 0.7) !important;
-    transform: translateY(-2px) !important;
+        0 6px 16px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 235, 175, 0.25),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.5) !important;
+    transition: all 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    transform: translateY(0) scale(1) !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
 }
 
-/* 3D Glassmorphic Cards with Depth & Hover Lift */
+/* Inner elements inherit typography and crisp styling */
+.stTabs [data-baseweb="tab"] * {
+    color: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    font-size: inherit !important;
+    letter-spacing: inherit !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ── UNSELECTED TAB HOVER: 3D LIFT & GOLDEN ILLUMINATION ────────────────────── */
+.stTabs [data-baseweb="tab"]:not([aria-selected="true"]):hover {
+    color: #ffffff !important;
+    background: linear-gradient(145deg, rgba(72, 50, 31, 0.95) 0%, rgba(38, 25, 15, 0.98) 100%) !important;
+    border-color: rgba(255, 226, 145, 0.9) !important;
+    transform: translateY(-5px) scale(1.05) !important;
+    box-shadow: 
+        0 14px 28px rgba(0, 0, 0, 0.78),
+        0 0 24px rgba(212, 175, 55, 0.52),
+        inset 0 1px 2px rgba(255, 245, 205, 0.6) !important;
+}
+
+.stTabs [data-baseweb="tab"]:not([aria-selected="true"]):hover * {
+    color: #ffffff !important;
+    text-shadow: 0 0 12px rgba(255, 235, 175, 0.85) !important;
+}
+
+/* ── ACTIVE / SELECTED TAB: MAJESTIC 3D GOLDEN GEMSTONE PLAQUE ─────────────── */
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg, #e8ba46 0%, #b88628 45%, #7a4b16 100%) !important;
+    color: #ffffff !important;
+    border: 2px solid #fff2cc !important;
+    transform: translateY(-6px) scale(1.07) !important;
+    box-shadow: 
+        0 14px 34px rgba(0, 0, 0, 0.82),
+        0 0 35px rgba(229, 184, 66, 0.75),
+        0 0 60px rgba(212, 175, 55, 0.45),
+        inset 0 2px 3px rgba(255, 255, 255, 0.92),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.5) !important;
+    animation: activeTabPulse 2.8s ease-in-out infinite alternate !important;
+    z-index: 3 !important;
+}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"] * {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 14px rgba(255, 255, 255, 0.7) !important;
+}
+
+@keyframes activeTabPulse {
+    0% {
+        box-shadow: 
+            0 12px 28px rgba(0, 0, 0, 0.8),
+            0 0 28px rgba(229, 184, 66, 0.65),
+            inset 0 2px 3px rgba(255, 255, 255, 0.88),
+            inset 0 -2px 5px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+        box-shadow: 
+            0 16px 40px rgba(0, 0, 0, 0.88),
+            0 0 50px rgba(229, 184, 66, 0.95),
+            0 0 75px rgba(212, 175, 55, 0.5),
+            inset 0 2px 4px rgba(255, 255, 255, 1),
+            inset 0 -2px 5px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ── 3D Glassmorphic Heritage Cards with Depth & Hover Lift ─────────────────── */
 .heritage-card {
-    background: linear-gradient(145deg, rgba(34, 23, 15, 0.88) 0%, rgba(20, 13, 8, 0.95) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    border-radius: 18px;
-    padding: 26px;
-    margin-bottom: 22px;
+    background: linear-gradient(145deg, rgba(36, 24, 16, 0.9) 0%, rgba(20, 13, 8, 0.96) 100%);
+    border: 1.5px solid rgba(212, 175, 55, 0.42);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
     box-shadow: 
-        0 14px 35px rgba(0, 0, 0, 0.7),
-        inset 0 1px 2px rgba(255, 235, 175, 0.25),
-        inset 0 0 20px rgba(212, 175, 55, 0.05);
-    backdrop-filter: blur(14px);
+        0 16px 40px rgba(0, 0, 0, 0.75),
+        inset 0 1px 2px rgba(255, 235, 175, 0.3),
+        inset 0 0 25px rgba(212, 175, 55, 0.06);
+    backdrop-filter: blur(16px);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     transform-style: preserve-3d;
 }
 
 .heritage-card:hover {
-    transform: translateY(-5px) scale(1.005);
-    border-color: rgba(245, 223, 163, 0.65);
+    transform: translateY(-6px) scale(1.008);
+    border-color: rgba(255, 226, 145, 0.75);
     box-shadow: 
-        0 22px 50px rgba(0, 0, 0, 0.85),
-        0 0 25px rgba(212, 175, 55, 0.25),
-        inset 0 1px 2px rgba(255, 245, 200, 0.4);
+        0 26px 55px rgba(0, 0, 0, 0.88),
+        0 0 30px rgba(212, 175, 55, 0.32),
+        inset 0 1px 2px rgba(255, 245, 200, 0.5);
 }
 
 .heritage-card h4 {
@@ -294,32 +472,33 @@ h1 {
     padding-bottom: 12px;
 }
 
-/* 3D Metric Stat Cubes */
+/* ── 3D Metric Stat Cubes with Interactive Depth ────────────────────────────── */
 .stat-box {
     text-align: center;
-    padding: 18px 14px;
-    background: linear-gradient(145deg, rgba(42, 28, 18, 0.85) 0%, rgba(22, 14, 9, 0.95) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.45);
-    border-radius: 16px;
-    margin-bottom: 14px;
+    padding: 20px 16px;
+    background: linear-gradient(145deg, rgba(45, 30, 20, 0.88) 0%, rgba(24, 15, 10, 0.96) 100%);
+    border: 1.5px solid rgba(212, 175, 55, 0.45);
+    border-radius: 18px;
+    margin-bottom: 16px;
     box-shadow: 
-        0 8px 22px rgba(0, 0, 0, 0.6),
-        inset 0 1px 2px rgba(255, 235, 175, 0.3);
-    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        0 10px 25px rgba(0, 0, 0, 0.65),
+        inset 0 1px 2px rgba(255, 235, 175, 0.32);
+    transform-style: preserve-3d;
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .stat-box:hover {
-    transform: translateY(-6px) scale(1.02);
-    border-color: rgba(245, 223, 163, 0.8);
+    transform: translateY(-8px) scale(1.03) rotateX(2.5deg);
+    border-color: rgba(255, 228, 150, 0.88);
     box-shadow: 
-        0 14px 30px rgba(0, 0, 0, 0.75),
-        0 0 20px rgba(212, 175, 55, 0.3),
-        inset 0 1px 2px rgba(255, 245, 200, 0.5);
+        0 18px 36px rgba(0, 0, 0, 0.8),
+        0 0 25px rgba(212, 175, 55, 0.4),
+        inset 0 1px 2px rgba(255, 245, 200, 0.55);
 }
 
 .stat-number {
     font-family: 'Cinzel', serif;
-    font-size: 1.45rem;
+    font-size: 1.55rem;
     font-weight: 800;
     color: #fcedc5;
     white-space: nowrap;
@@ -328,190 +507,272 @@ h1 {
     display: block;
     max-width: 100%;
     padding: 0 4px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75), 0 0 15px rgba(212, 175, 55, 0.4);
 }
 
 .stat-label {
-    font-size: 0.84rem;
-    color: #c9b793;
+    font-size: 0.86rem;
+    color: #cfbf9b;
     text-transform: uppercase;
-    letter-spacing: 0.9px;
+    letter-spacing: 1px;
     font-weight: 600;
     margin-top: 6px;
 }
 
-/* 3D Chat Messages with Scroll Depth */
+/* ── 3D Floating Chat Messages ───────────────────────────────────────────────── */
 [data-testid="stChatMessage"] {
-    background: linear-gradient(145deg, rgba(30, 20, 13, 0.94) 0%, rgba(18, 12, 8, 0.98) 100%) !important;
-    border: 1px solid rgba(212, 175, 55, 0.35) !important;
-    border-radius: 18px !important;
-    padding: 20px 24px !important;
-    margin-bottom: 16px !important;
+    background: linear-gradient(145deg, rgba(32, 22, 14, 0.95) 0%, rgba(19, 13, 8, 0.98) 100%) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.38) !important;
+    border-radius: 20px !important;
+    padding: 22px 26px !important;
+    margin-bottom: 18px !important;
     box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.6),
-        inset 0 1px 1px rgba(255, 235, 175, 0.2) !important;
+        0 10px 28px rgba(0, 0, 0, 0.65),
+        inset 0 1px 1px rgba(255, 235, 175, 0.25) !important;
     font-size: 1.05rem !important;
     line-height: 1.7 !important;
-    transition: transform 0.3s ease, border-color 0.3s ease !important;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+    animation: chatMsgEntrance 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+}
+
+@keyframes chatMsgEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 [data-testid="stChatMessage"]:hover {
-    transform: translateY(-2px);
-    border-color: rgba(229, 201, 139, 0.55) !important;
+    transform: translateY(-3px);
+    border-color: rgba(255, 226, 145, 0.65) !important;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.75), 0 0 20px rgba(212, 175, 55, 0.2) !important;
 }
 
 [data-testid="stChatMessage"] p, [data-testid="stChatMessage"] li {
     color: #f7f1e1 !important;
 }
 
-/* 3D Chat Input Bar */
+/* ── 3D Chat Input Bar with Laser Focus Glow ─────────────────────────────────── */
 [data-testid="stChatInput"] {
-    border-radius: 18px !important;
-    border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
-    background: linear-gradient(145deg, rgba(26, 17, 11, 0.98) 0%, rgba(16, 10, 6, 0.99) 100%) !important;
+    border-radius: 20px !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.65) !important;
+    background: linear-gradient(145deg, rgba(28, 18, 12, 0.98) 0%, rgba(16, 10, 6, 0.99) 100%) !important;
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.75),
-        0 0 15px rgba(212, 175, 55, 0.15),
-        inset 0 1px 2px rgba(255, 235, 175, 0.2) !important;
+        0 12px 35px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(212, 175, 55, 0.18),
+        inset 0 1px 2px rgba(255, 235, 175, 0.25) !important;
     transition: all 0.3s ease !important;
 }
 
 [data-testid="stChatInput"]:focus-within {
-    border-color: #ffd978 !important;
+    border-color: #ffe08a !important;
     box-shadow: 
-        0 12px 35px rgba(0, 0, 0, 0.85),
-        0 0 25px rgba(212, 175, 55, 0.35),
-        inset 0 1px 2px rgba(255, 245, 200, 0.4) !important;
+        0 16px 42px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(212, 175, 55, 0.45),
+        inset 0 1px 2px rgba(255, 245, 200, 0.5) !important;
+    transform: translateY(-2px) !important;
 }
 
 [data-testid="stChatInput"] textarea {
     color: #f7f1e1 !important;
 }
 
-/* 3D Tactile Golden Heritage Buttons */
+/* ── 3D Tactile Golden Heritage Buttons ──────────────────────────────────────── */
 .stButton > button {
-    background: linear-gradient(135deg, #8a5a2b 0%, #5a3818 100%) !important;
-    color: #fff2d1 !important;
-    border: 1px solid rgba(245, 223, 163, 0.65) !important;
-    border-radius: 12px !important;
+    background: linear-gradient(135deg, #966330 0%, #633e1a 100%) !important;
+    color: #fff4d6 !important;
+    border: 1.5px solid rgba(255, 228, 155, 0.7) !important;
+    border-radius: 14px !important;
     font-family: 'Cinzel', serif !important;
     font-weight: 700 !important;
-    font-size: 0.98rem !important;
-    padding: 10px 24px !important;
-    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    font-size: 1rem !important;
+    padding: 11px 26px !important;
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
     box-shadow: 
-        0 6px 18px rgba(0, 0, 0, 0.55),
-        inset 0 1px 2px rgba(255, 245, 200, 0.5) !important;
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        inset 0 1px 2px rgba(255, 245, 200, 0.55),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4) !important;
     transform: translateY(0);
 }
 
 .stButton > button:hover {
-    background: linear-gradient(135deg, #ad7337 0%, #754a20 100%) !important;
+    background: linear-gradient(135deg, #bd813e 0%, #7d4f22 100%) !important;
     box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.7),
-        0 0 22px rgba(212, 175, 55, 0.5),
-        inset 0 1px 3px rgba(255, 255, 255, 0.7) !important;
-    border-color: #ffe699 !important;
+        0 14px 30px rgba(0, 0, 0, 0.75),
+        0 0 25px rgba(212, 175, 55, 0.55),
+        inset 0 1px 3px rgba(255, 255, 255, 0.75) !important;
+    border-color: #fff0b8 !important;
     color: #ffffff !important;
-    transform: translateY(-3px) scale(1.02);
+    transform: translateY(-4px) scale(1.03);
 }
 
 .stButton > button:active {
-    transform: translateY(1px) scale(0.99) !important;
+    transform: translateY(2px) scale(0.98) !important;
     box-shadow: 
-        0 3px 10px rgba(0, 0, 0, 0.7),
-        inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+        0 3px 8px rgba(0, 0, 0, 0.8),
+        inset 0 2px 5px rgba(0, 0, 0, 0.6) !important;
 }
 
-/* 3D File Uploader Container */
+/* ── 3D Levitating File Uploader Altar ────────────────────────────────────────── */
 [data-testid="stFileUploader"] {
-    background: linear-gradient(145deg, rgba(32, 21, 13, 0.85) 0%, rgba(18, 12, 7, 0.95) 100%) !important;
-    border: 2px dashed rgba(212, 175, 55, 0.55) !important;
-    border-radius: 20px !important;
-    padding: 24px !important;
+    background: linear-gradient(145deg, rgba(35, 23, 14, 0.88) 0%, rgba(20, 13, 8, 0.96) 100%) !important;
+    border: 2px dashed rgba(212, 175, 55, 0.6) !important;
+    border-radius: 22px !important;
+    padding: 26px !important;
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.6),
-        inset 0 1px 2px rgba(255, 235, 175, 0.2) !important;
-    transition: all 0.3s ease !important;
+        0 12px 34px rgba(0, 0, 0, 0.65),
+        inset 0 1px 2px rgba(255, 235, 175, 0.25) !important;
+    transition: all 0.35s ease !important;
+    animation: uploaderLevitate 4.5s ease-in-out infinite alternate !important;
+}
+
+@keyframes uploaderLevitate {
+    0% {
+        transform: translateY(0px);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+    100% {
+        transform: translateY(-5px);
+        border-color: rgba(255, 228, 150, 0.8);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(212, 175, 55, 0.3);
+    }
 }
 
 [data-testid="stFileUploader"]:hover {
-    border-color: #ffd978 !important;
+    border-color: #ffe08a !important;
     box-shadow: 
-        0 14px 40px rgba(0, 0, 0, 0.75),
-        0 0 20px rgba(212, 175, 55, 0.25) !important;
+        0 18px 45px rgba(0, 0, 0, 0.8),
+        0 0 28px rgba(212, 175, 55, 0.35) !important;
 }
 
 [data-testid="stFileUploader"] section {
-    background-color: rgba(22, 14, 9, 0.9) !important;
-    border-radius: 12px !important;
+    background-color: rgba(24, 15, 10, 0.92) !important;
+    border-radius: 14px !important;
 }
 
 [data-testid="stFileUploader"] section button {
-    background: linear-gradient(135deg, #70451e 0%, #4a2d12 100%) !important;
+    background: linear-gradient(135deg, #7c4c21 0%, #523114 100%) !important;
     color: #fcedc5 !important;
-    border: 1px solid rgba(229, 201, 139, 0.5) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(229, 201, 139, 0.55) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55) !important;
 }
 
-/* Code Snippets & 3D Manuscript Quotes */
+/* ── Sidebar 3D Polish: Antique Rosewood & Glowing Brass Controls ────────────── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, rgba(22, 15, 10, 0.98) 0%, rgba(14, 9, 6, 0.99) 100%) !important;
+    border-right: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+    backdrop-filter: blur(18px);
+    box-shadow: 8px 0 35px rgba(0, 0, 0, 0.88);
+}
+
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    color: #f7e2a9 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* 3D Sidebar Sliders */
+[data-testid="stSlider"] [role="slider"] {
+    background: linear-gradient(135deg, #f0c554 0%, #9e6928 100%) !important;
+    border: 2px solid #fff3cf !important;
+    box-shadow: 0 0 14px rgba(229, 184, 66, 0.8) !important;
+}
+
+[data-testid="stSlider"] div[data-testid="stThumbValue"] {
+    color: #fcedc5 !important;
+    font-weight: 700 !important;
+}
+
+[data-testid="stSlider"] div[data-baseweb="slider"] > div > div {
+    background: linear-gradient(90deg, #d4af37 0%, #8b5a2b 100%) !important;
+}
+
+/* 3D Sidebar Selectbox */
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    background: linear-gradient(145deg, rgba(40, 26, 17, 0.95) 0%, rgba(22, 14, 9, 0.98) 100%) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.5) !important;
+    border-radius: 12px !important;
+    color: #fcedc5 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 235, 175, 0.25) !important;
+}
+
+/* 3D Sidebar Radio Buttons */
+[data-testid="stRadio"] label {
+    color: #ded1b8 !important;
+    transition: color 0.2s ease;
+}
+
+[data-testid="stRadio"] label:hover {
+    color: #ffffff !important;
+}
+
+[data-testid="stRadio"] [role="radio"][aria-checked="true"] div {
+    border-color: #d4af37 !important;
+    background-color: #d4af37 !important;
+}
+
+/* ── Code Snippets & 3D Manuscript Quotes ────────────────────────────────────── */
 .snippet-quote {
     border-left: 4px solid #e5c98b;
-    background: linear-gradient(145deg, rgba(42, 28, 18, 0.85) 0%, rgba(25, 16, 10, 0.95) 100%);
-    padding: 14px 18px;
-    border-radius: 0 14px 14px 0;
-    margin: 12px 0;
+    background: linear-gradient(145deg, rgba(44, 29, 19, 0.88) 0%, rgba(26, 17, 10, 0.96) 100%);
+    padding: 15px 20px;
+    border-radius: 0 16px 16px 0;
+    margin: 14px 0;
     font-style: italic;
     color: #f7f1e1;
     box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.45),
-        inset 0 1px 1px rgba(255, 235, 175, 0.2);
+        0 6px 18px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 235, 175, 0.25);
 }
 
-/* 3D Glowing Pill Badges */
+/* ── 3D Glowing Pill Badges ──────────────────────────────────────────────────── */
 .tag-badge {
     display: inline-block;
-    padding: 5px 14px;
+    padding: 6px 16px;
     border-radius: 24px;
-    font-size: 0.84rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(139, 90, 43, 0.35) 100%);
-    border: 1px solid rgba(229, 201, 139, 0.6);
-    color: #fff2d1;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.28) 0%, rgba(139, 90, 43, 0.38) 100%);
+    border: 1px solid rgba(229, 201, 139, 0.65);
+    color: #fff4d6;
     margin-right: 8px;
     margin-bottom: 8px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tag-badge:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.4);
 }
 
-/* 3D Architecture Guide Section Card */
+/* ── 3D Architecture Guide Section Card ──────────────────────────────────────── */
 .arch-card {
-    background: linear-gradient(145deg, rgba(34, 23, 14, 0.92) 0%, rgba(18, 12, 7, 0.98) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    border-radius: 18px;
-    padding: 26px 30px;
-    margin-bottom: 22px;
+    background: linear-gradient(145deg, rgba(36, 24, 15, 0.94) 0%, rgba(19, 13, 8, 0.98) 100%);
+    border: 1.5px solid rgba(212, 175, 55, 0.45);
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
     box-shadow: 
-        0 12px 32px rgba(0, 0, 0, 0.65),
-        inset 0 1px 2px rgba(255, 235, 175, 0.25);
+        0 14px 35px rgba(0, 0, 0, 0.7),
+        inset 0 1px 2px rgba(255, 235, 175, 0.28);
     transition: all 0.35s ease;
 }
 
 .arch-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(245, 223, 163, 0.65);
+    transform: translateY(-5px);
+    border-color: rgba(255, 226, 145, 0.7);
     box-shadow: 
-        0 18px 45px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(212, 175, 55, 0.2);
+        0 20px 50px rgba(0, 0, 0, 0.85),
+        0 0 24px rgba(212, 175, 55, 0.25);
 }
 
 .arch-header {
     font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     color: #fcedc5;
     margin-bottom: 10px;
     display: flex;
@@ -520,9 +781,9 @@ h1 {
 }
 
 .arch-sub {
-    color: #cfbf9b;
-    font-size: 0.96rem;
-    line-height: 1.65;
+    color: #d1c19f;
+    font-size: 0.98rem;
+    line-height: 1.68;
     margin-bottom: 18px;
 }
 </style>
@@ -1012,10 +1273,16 @@ hero_html = """
             <span class="tag-badge">📜 8 Canonical Masterworks</span>
             <span class="tag-badge">🔐 Zero Cloud Data Leakage</span>
         </div>
-    </div>
 </div>
 """
 st.markdown(hero_html, unsafe_allow_html=True)
+
+# ── 3D Navigation Chamber Pedestal ──────────────────────────────────────────
+st.markdown("""
+<div class="nav-pedestal-header">
+    <div class="nav-pedestal-badge">🏛️ ARCHITECTURAL NAVIGATION NEXUS • 3D CHAMBERS 🏛️</div>
+</div>
+""", unsafe_allow_html=True)
 
 # ── Navigation Tabs ───────────────────────────────────────────────────────────
 tab_upload, tab_classic, tab_profile, tab_community, tab_admin, tab_about = st.tabs([
